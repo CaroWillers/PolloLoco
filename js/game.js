@@ -26,6 +26,9 @@ window.addEventListener('keydown', (event) => {
         case ' ':
             keyboard.SPACE = true;
             break;
+        case '68': // Keycode für 'D'
+            keyboard.D = true;
+            break;
     }
 });
 
@@ -45,6 +48,9 @@ window.addEventListener('keyup', (event) => {
             break;
         case ' ':
             keyboard.SPACE = false;
+            break;
+        case '68': // Keycode für 'D'
+            keyboard.D = false;
             break;
     }
 });
