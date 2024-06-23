@@ -5,8 +5,6 @@ let keyboard = new Keyboard();
 function init() {
     canvas = document.getElementById('canvas');
     world = new World(canvas, keyboard);
-
-    console.log('My character is', world.character);
 }
 
 window.addEventListener('keydown', (event) => {
@@ -26,7 +24,8 @@ window.addEventListener('keydown', (event) => {
         case ' ':
             keyboard.SPACE = true;
             break;
-        case '68': // Keycode für 'D'
+        case 'd': // Taste 'd'
+        case 'D': // Taste 'D'
             keyboard.D = true;
             break;
     }
@@ -49,8 +48,44 @@ window.addEventListener('keyup', (event) => {
         case ' ':
             keyboard.SPACE = false;
             break;
-        case '68': // Keycode für 'D'
-            keyboard.D = false;
+        case 'd': // Taste 'd'
+        case 'D': // Taste 'D'
+            keyboard.D = true;
             break;
     }
 });
+
+
+function showOverlay() {
+    document.getElementById('storyOverlay').style.display = 'flex';
+    document.body.classList.add('overlay-active');
+}
+
+function closeOverlay() {
+    document.getElementById('storyOverlay').style.display = 'none';
+    document.body.classList.remove('overlay-active');
+}
+ 
+function drawStartScreen() {
+    let canvas = document.getElementById('startCanvas');
+    let ctx = canvas.getContext('2d');
+
+    // Draw the start image
+    let startImage = new Image();
+    startImage.src = 'img/9_intro_outro_screens/start/startscreen_1.png';
+    startImage.onload = () => {
+        ctx.drawImage(startImage, 0, 0, canvas.width, canvas.height);
+    };
+}
+
+function startGame() {
+    document.querySelector('.container').style.display = 'none';
+    document.getElementById('canvas').style.display = 'block';
+    init();
+}
+
+function restartGame() {
+    location.reload();
+}
+
+window.onload = drawStartScreen;

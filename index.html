@@ -21,10 +21,57 @@
     <script src="js/game.js"></script>
     <title>EL POLLO LOCO</title>
 </head>
-<body onload="init()">
-    <h1>EL POLLO LOCO</h1>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>EL POLLO LOCO</h1>
+        <h2>Join Pepe on a wild desert adventure to defeat the giant chicken and save the day!</h2>
+        <button class="story-button" onclick="showOverlay()">Learn more about the story of Pepe</button>
+    </div>
+   
+    <div class="start-screen-container">
+        <canvas id="startCanvas" class="start-screen" width="720" height="480"></canvas>
+        <button class="start-button" onclick="startGame()">START GAME!</button>
+    </div>
+   
+    <div class="description">
+        <h2>Key Legend for Pepe's moves </h2>
+        <ul class="legend">
+        <li>
+            <strong>walk left:</strong> Left Arrow Key
+            <div class="tooltip">Pepe moves left.</div>
+        </li>
+        <li>
+            <strong>walk right:</strong> Right Arrow Key
+            <div class="tooltip">Pepe moves right.</div>
+        </li>
+        <li>
+            <strong>jump:</strong> spacebar
+            <div class="tooltip">Pepe jumps over obstacles or enemies.</div>
+        </li>
+        <li>
+            <strong>throw bottle:</strong> Key D
+            <div class="tooltip">Pepe throws bottle.</div>
+        </li>
+        </ul> 
+    </div>
+</div>     
+<div class="overlay" id="storyOverlay">
+    <div class="overlay-content">
+        <h2>The Story of Pepe</h2>
+        <p>Pepe, the brave Mexican, embarks on an exciting adventure through the hot desert. Along his journey, he encounters dangerous enemies in the form of wild chickens blocking his way.<br><br>However, Pepe can defeat these chickens with throwing bottles he collects from the ground. Besides the chickens, there are also valuable coins to be found in the desert, which Pepe can collect to regain health.<br><br>At the end of his journey, a great final boss - a giant chicken - awaits to be defeated in order to win the game.</p>
+        <button class="close-button" onclick="closeOverlay()">Close</button>
+    </div>
+</div> 
 
-    <canvas id="canvas" width="720" height="480"></canvas>
+<canvas id="canvas" class="canvas" width="720" height="480" style="display: none;"></canvas>
+
+ 
+ 
+
+<footer>
+     <a onclick="window.location.href='./privacy-policy.html'">Datenschutzerklärung/Impressum</a> 
+</footer>
     
 </body>
 </html>

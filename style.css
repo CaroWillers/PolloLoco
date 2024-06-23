@@ -1,9 +1,289 @@
 body {
-    font-family: merienda;
+    margin: 0;
+    padding: 0; 
+    font-family: merienda, Arial, Helvetica, sans-serif;
     display: flex;
     align-items: center;
     flex-direction: column;  
+    background-image: url('img/desertBackground.jpg');
+    background-size: cover;
+    background-position: center;  
 }
-canvas {
-    background-color: black;
+
+h1 {
+    font-size: 64px;
+    font-weight: 900; 
+    margin-bottom: 20px;
+}
+
+h2 {
+    font-size: 20px;
+    margin: 0;
+}
+
+canvas {  
+    display: block;
+    width: 720px;
+    height: 480px;  
+    margin-bottom: 20px; 
+    position: relative; 
 } 
+
+/** Story of Pepe**/
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction:column;
+    width: 100%;
+    height: 100%;
+}
+
+.header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.info {
+    width: 300px;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-right: 20px;
+}
+.start-screen-container {
+    position: relative;
+    width: 720px;
+    height: 480px;
+}
+.start-screen {
+    width: 100%;
+    height: 100%;
+    border: 2px solid black;
+}
+.overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    justify-content: center;
+    align-items: center;
+}
+.overlay-content {
+    background-color:rgb(252,200,36);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    width: 350px;
+    line-height: 1.5;
+}
+
+.overlay-active .start-button {
+    display: none;
+}
+
+.story-button {
+    font-family: merienda;
+    padding: 10px 20px;
+    font-size: 20px;
+    font-weight: 700;
+    cursor: pointer;
+    background-color: rgb(255, 140, 60); 
+    color: black;
+    border: none;
+    border-radius: 10px;
+    transition: background-color 0.3s;
+    margin-top: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.story-button:hover {
+    background-color: rgb(252,112,33);
+    transform: scale(1.05);  
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);  
+}
+
+.story-button::before {
+    content: ">> "; /* Pfeile vor dem Text */
+    font-size: 24px; /* Größe der Pfeile */
+}
+
+.start-button  {
+    font-family: merienda;
+    padding: 20px 40px;
+    font-size: 30px;
+    font-weight: 900;
+    cursor: pointer;
+    background-color:rgb(252,112,33);
+    color: black;
+    border: 4px solid transparent;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(255, 200, 50, 0.7), 0 0 20px rgba(255, 200, 50, 0.7), 0 0 30px rgba(255, 200, 50, 0.7), 0 0 40px rgba(255, 200, 50, 0.7);
+    transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+    margin-top: 20px;
+    box-shadow: 
+    0 0 10px rgba(255, 200, 50, 0.7), 
+    0 0 20px rgba(255, 200, 50, 0.7), 
+    0 0 30px rgba(255, 200, 50, 0.7), 
+    0 0 40px rgba(255, 200, 50, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 15px;
+    left: 30%;
+    z-index: 1; 
+    animation: blink 1s infinite;
+}
+
+.start-button:hover  {
+    background-color: rgb(255, 140, 60); 
+    transform: scale(1.1);  
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);  
+}
+
+@keyframes blink {
+    0%, 100% { background-color: rgb(252, 112, 33); }
+    50% { background-color: rgb(255, 200, 50); }
+}
+.close-button {
+    font-family: merienda;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    background-color: #FF7F50;  
+    color: black;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease-in-out;
+    margin-top: 20px;
+}
+.close-button:hover {
+    background-color:#FF6347;
+    transform: scale(1.05); 
+}
+
+.description{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    width: 400px;
+    margin-bottom: 20px;
+    padding: 20px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease-in-out;
+    margin-top: 30px;
+}
+
+.legend {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    align-items: flex-start; 
+    position: relative;
+    list-style: none;  
+}
+
+.legend li {
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.legend li:hover .tooltip {
+    display: block;
+}
+
+.tooltip {
+    display: none;
+    position: absolute;
+    left: 220px;
+    top: 0;
+    background-color: #333;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    width: 200px;
+    z-index: 1;
+    font-size: 14px;
+}
+
+/* Smartphones (portrait and landscape) ----------- */
+@media only screen and (min-device-width: 320px) and (max-device-width: 480px) {
+    body {
+        background-image: url('img/desertBackground.jpg');
+        background-size: cover;
+        background-position: center;  
+    }
+    h1 {
+        font-size: 32px;
+    }
+    h2 {
+        font-size: 16px;
+    }
+    canvas {
+        width: 320px;
+        height: 240px;
+    }
+    .info {
+        width: 200px;
+    }
+    .start-screen-container {
+        width: 320px;
+        height: 240px;
+    }
+    .overlay-content {
+        width: 200px;
+    }
+    .story-button {
+        font-size: 16px;
+    }
+    .start-button {
+        font-size: 20px;
+    }
+    .close-button {
+        font-size: 12px;
+    }
+    .description {
+        width: 200px;
+    }
+    .legend {
+        width: 200px;
+    }
+    .legend li {
+        margin-bottom: 5px;
+    }
+    .tooltip {
+        left: 120px;
+        width: 100px;
+        font-size: 12px;
+    }
+}
+
+/*  Smartphones  ----------- */
+@media only screen and (max-width: 720px)  {
+    canvas { 
+        width: 100%;
+    }
+}
+
+/*  Smartphones  ----------- */
+@media only screen and (max-height: 480px)  {
+    canvas { 
+        height: 100vh;
+    }
+}
