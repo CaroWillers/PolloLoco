@@ -9,6 +9,7 @@
     <script src="models/movable-object.class.js"></script>
     <script src="models/character.class.js"></script>
     <script src="models/chicken.class.js"></script>
+    <script src="models/chicken-small.class.js"></script>
     <script src="models/cloud.class.js"></script>
     <script src="models/status-bar.class.js"></script>
     <script src="models/world.class.js"></script> 
@@ -62,16 +63,18 @@
         <p>Pepe, the brave Mexican, embarks on an exciting adventure through the hot desert. Along his journey, he encounters dangerous enemies in the form of wild chickens blocking his way.<br><br>However, Pepe can defeat these chickens with throwing bottles he collects from the ground. Besides the chickens, there are also valuable coins to be found in the desert, which Pepe can collect to regain health.<br><br>At the end of his journey, a great final boss - a giant chicken - awaits to be defeated in order to win the game.</p>
         <button class="close-button" onclick="closeOverlay()">Close</button>
     </div>
+
+    <footer>
+        <a onclick="window.location.href='./privacy-policy.html'">Datenschutzerklärung/Impressum</a> 
+   </footer>
 </div> 
 
-<canvas id="canvas" class="canvas" width="720" height="480" style="display: none;"></canvas>
-
+<div id="fullscreen" > 
+    <canvas id="canvas" class="canvas" width="720" height="480" style="display: none;"></canvas>
+</div>
  
- 
 
-<footer>
-     <a onclick="window.location.href='./privacy-policy.html'">Datenschutzerklärung/Impressum</a> 
-</footer>
+
     
 </body>
 </html>

@@ -17,14 +17,6 @@ constructor(canvas, keyboard) {
     this.setWorld();   
     this.run(); 
 }
-
-generateBackgroundObjects() {
-    let segmentWidth = 719;
-        if (this.backgroundObjects.length > 0) {
-            let lastX = this.backgroundObjects[this.backgroundObjects.length - 1].x;
-            this.addBackgroundSegment(lastX + segmentWidth * 2);
-        }
-    }
      
 setWorld() {
     this.character.world = this;
@@ -53,10 +45,31 @@ checkCollisions() {
     });
 }
 
+checkBackgroundExtension() {
+    const segmentWidth = 719;
+    const buffer = segmentWidth * 2; // Buffer distance to add new segments before reaching the edge
+
+    if (this.character.x + this.canvas.width > this.level.backgroundObjects[this.level.backgroundObjects.length - 1].x + buffer) {
+        this.generateBackgroundObjects();
+    }
+}
+
+generateBackgroundObjects() {
+    const lastSegment = this.level.backgroundObjects[this.level.backgroundObjects.length - 1];
+    const lastX = lastSegment.x;
+    const segmentWidth = 719;
+
+    for (let i = 1; i <= 2; i++) { // Add two new segments
+        addBackgroundSegment(this.level, lastX + segmentWidth * i);
+    }
+}
+
 draw() {
+    // Clear the canvas
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.ctx.translate(this.camera_x, 0);
- 
+     
+    // Camera movement
+    this.ctx.translate(this.camera_x, 0);  
     this.addObjectsToMap(this.level.backgroundObjects); 
          
     this.ctx.translate(-this.camera_x, 0); // Back to the original position
@@ -70,6 +83,7 @@ draw() {
 
     this.ctx.translate(-this.camera_x, 0);
 
+    // Draw() wird immer wieder aufgerufen
     let self = this;
     requestAnimationFrame(function() {
     self.draw();

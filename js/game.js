@@ -3,8 +3,9 @@ let world;
 let keyboard = new Keyboard();
 
 function init() {
+    initLevel();
     canvas = document.getElementById('canvas');
-    world = new World(canvas, keyboard);
+    world = new World(canvas, keyboard); 
 }
 
 window.addEventListener('keydown', (event) => {
@@ -89,3 +90,33 @@ function restartGame() {
 }
 
 window.onload = drawStartScreen;
+
+//Fullscreen//
+function fullscreen() {
+    let fullscreen = document.getElementById('fullscreen');
+    enterFullscreen(fullscreen);
+}
+
+function enterFullscreen(element) {
+    if(element.requestFullscreen) {
+        element.requestFullscreen();
+    } else if(element.mozRequestFullScreen) {
+        element.mozRequestFullScreen();
+    } else if(element.webkitRequestFullscreen) {
+        element.webkitRequestFullscreen();
+    } else if(element.msRequestFullscreen) {
+        element.msRequestFullscreen();
+    }
+}
+
+function exitFullscreen() {
+    if(document.exitFullscreen) {
+        document.exitFullscreen();
+    } else if(document.mozCancelFullScreen) {
+        document.mozCancelFullScreen();
+    } else if(document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+    } else if(document.msExitFullscreen) {
+        document.msExitFullscreen();
+    }
+}

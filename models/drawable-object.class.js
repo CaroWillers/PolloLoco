@@ -3,7 +3,7 @@ class DrawableObject {
     imageCache = {};
     currentImage = 0;
     x = 120;
-    y = 280;
+    y;
     width = 150;
     height = 150;
      
@@ -17,7 +17,7 @@ draw(ctx) {
 }
 
 drawFrame(ctx) {
-    if(this instanceof Character || this instanceof Chicken) {
+    if(this instanceof Character || this instanceof Chicken || this instanceof ChickenSmall || this instanceof ThrowableObject) {
     ctx.beginPath();
     ctx.lineWidth = '5';
     ctx.strokeStyle = 'blue';
