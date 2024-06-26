@@ -1,6 +1,6 @@
 let level1;
 
-function initLevel() {
+function initLevel(canvas) {
     level1 = new Level(
         [
             new Chicken(),
@@ -12,9 +12,9 @@ function initLevel() {
             new ChickenSmall(),
             new Endboss()
         ],
-        [
-            new Cloud()
-        ],
+        [   new Cloud(canvas.width)
+        ], 
+
         []
     );
 
@@ -33,7 +33,6 @@ function generateInitialBackgroundObjects(level) {
 function addBackgroundSegment(level, offsetX) {
     const layers1 = [
         'img/5_background/layers/air.png',
-        'img/5_background/layers/4_clouds/1.png',
         'img/5_background/layers/3_third_layer/1.png',
         'img/5_background/layers/2_second_layer/1.png',
         'img/5_background/layers/1_first_layer/1.png'
@@ -41,7 +40,6 @@ function addBackgroundSegment(level, offsetX) {
 
     const layers2 = [
         'img/5_background/layers/air.png',
-        'img/5_background/layers/4_clouds/2.png',
         'img/5_background/layers/3_third_layer/2.png',
         'img/5_background/layers/2_second_layer/2.png',
         'img/5_background/layers/1_first_layer/2.png'

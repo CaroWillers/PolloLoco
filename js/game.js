@@ -3,11 +3,14 @@ let world;
 let keyboard = new Keyboard();
 
 function init() {
-    initLevel();
     canvas = document.getElementById('canvas');
-    world = new World(canvas, keyboard); 
+    if (canvas) {
+        initLevel(canvas); // Initialisiere das Level mit dem Canvas
+        world = new World(canvas, keyboard);
+    } else {
+        console.error("Canvas element not found.");
+    }
 }
-
 window.addEventListener('keydown', (event) => {
     switch(event.key) {
         case 'ArrowRight':
