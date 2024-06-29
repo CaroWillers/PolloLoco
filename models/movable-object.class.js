@@ -5,12 +5,6 @@ class MovableObject extends DrawableObject {
     acceleration = 2.5;
     energy = 100;  
     lastHit = 0; 
-    canvasWidth;
-
-constructor(canvasWidth) {
-    super();
-    this.canvasWidth = canvasWidth;
-}
 
 applyGravity() {
     setInterval(() => {
@@ -67,9 +61,7 @@ isAboveGround() {
 
     moveLeft() {
         this.x -= this.speed;
-        if (this.x + this.width < 0) {  
-            this.x = this.canvasWidth + Math.random() * 100;   
-        }
+
     }
 
     jump() {

@@ -5,34 +5,39 @@ class World {
     ctx;
     keyboard;
     camera_x = 0;
-    statusBarHealth = new StatusBarHealth();
-    statusBarCoin = new StatusBarCoin();
-    statusBarBottle = new StatusBarBottle(); 
+    statusBarHealth = new StatusBar('health');
+    statusBarCoin = new StatusBar('coin');
+    statusBarBottle = new StatusBar('bottle');
     throwableObjects = [new ThrowableObject()];
 
 constructor(canvas, keyboard) { 
     this.canvas = canvas;    
     this.keyboard = keyboard;    
     this.ctx = canvas.getContext('2d'); 
-    this.character.world = this; 
+    this.character.world = this;
     this.draw(); 
     this.setWorld();   
     this.run(); 
 }
+
+generateBackgroundObjects() {
+    let segmentWidth = 719;
+        if (this.backgroundObjects.length > 0) {
+            let lastX = this.backgroundObjects[this.backgroundObjects.length - 1].x;
+            this.addBackgroundSegment(lastX + segmentWidth * 2);
+        }
+    }
      
 setWorld() {
     this.character.world = this;
     }
 
-run() {
+run() { 
     setInterval(() => { 
         this.checkCollisions();
         this.checkThrowObjects();
-        this.checkBackgroundExtension();
-        this.level.clouds[0].moveLeft(); 
-        }, 1000 / 60); // 60 Mal pro Sekunde
-    }
-    
+    }, 200);
+}
 
 checkThrowObjects() {
     if(this.keyboard.D) {
@@ -42,49 +47,46 @@ checkThrowObjects() {
 }
 
 checkCollisions() {
+    this.checkEnemyCollisions();
+    // this.checkCoinCollisions(); // Diese Zeile auskommentieren, um die Funktion nicht auszuführen
+    // Add checkBottleCollisions if bottle collision logic is needed
+}
+
+checkEnemyCollisions() {
     this.level.enemies.forEach(enemy => {
-        if(this.character.isColliding(enemy)) {
+        if (this.character.isColliding(enemy)) {
             this.character.hit();
-            this.statusBarHealth[0].setPercentage(this.character.energy);  
+            this.statusBarHealth.setPercentage(this.character.energy);
         }
     });
 }
+// checkCoinCollisions() {
+//     this.level.coins.forEach((coin, index) => {
+//         if (this.character.isColliding(coin)) {
+//             this.coinCounter++;
+//             this.statusBarCoin.setPercentage((this.coinCounter / this.level.coins.length) * 100);
+//             this.level.coins.splice(index, 1); // Entferne die eingesammelte Münze
+//             // coin.coinSound.play(); // Assuming there is a sound to be played
+//         }
+//     });
+// }
 
-checkBackgroundExtension() {
-    const segmentWidth = 719;
-    const buffer = segmentWidth * 2; // Buffer distance to add new segments before reaching the edge
-
-    if (this.character.x + this.canvas.width > this.level.backgroundObjects[this.level.backgroundObjects.length - 1].x + buffer) {
-        this.generateBackgroundObjects();
-    }
-}
-
-generateBackgroundObjects() {
-    const lastSegment = this.level.backgroundObjects[this.level.backgroundObjects.length - 1];
-    const lastX = lastSegment.x;
-    const segmentWidth = 719;
-
-    for (let i = 1; i <= 2; i++) { // Add two new segments
-        addBackgroundSegment(this.level, lastX + segmentWidth * i);
-    }
-}
 
 draw() {
-    // Clear the canvas
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-     
-    // Camera movement
-    this.ctx.translate(this.camera_x, 0);  
+    this.ctx.translate(this.camera_x, 0);
+ 
     this.addObjectsToMap(this.level.backgroundObjects); 
          
     this.ctx.translate(-this.camera_x, 0); // Back to the original position
     this.addToMap(this.statusBarHealth);
     this.addToMap(this.statusBarCoin);
     this.addToMap(this.statusBarBottle);
-    this.ctx.translate(this.camera_x, 0); // Forward to the original position
+    this.ctx.translate(this.camera_x, 0); // Forwaard to the original position
 
     this.addToMap(this.character);
     this.addObjectsToMap(this.level.clouds);
+    this.addObjectsToMap(this.level.coins);
     this.addObjectsToMap(this.level.enemies);
     this.addObjectsToMap(this.throwableObjects);
 
