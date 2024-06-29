@@ -8,12 +8,14 @@ class World {
     statusBarHealth = new StatusBar('health');
     statusBarCoin = new StatusBar('coin');
     statusBarBottle = new StatusBar('bottle');
-    throwableObjects = [new ThrowableObject()];
+    coinCounter = 0;
+    bottleCounter = 0;
+    throwableObjects = [];
 
 constructor(canvas, keyboard) { 
     this.canvas = canvas;    
     this.keyboard = keyboard;    
-    this.ctx = canvas.getContext('2d'); 
+    this.ctx = canvas.getContext('2d');  
     this.character.world = this;
     this.draw(); 
     this.setWorld();   
@@ -32,12 +34,13 @@ setWorld() {
     this.character.world = this;
     }
 
-run() { 
-    setInterval(() => { 
-        this.checkCollisions();
-        this.checkThrowObjects();
-    }, 200);
-}
+    run() {
+        setInterval(() => {
+            this.checkCollisions();
+            this.checkThrowObjects();
+            this.level.clouds.forEach(cloud => cloud.moveLeft());
+        }, 1000 / 60); // 60 Mal pro Sekunde
+    }
 
 checkThrowObjects() {
     if(this.keyboard.D) {
@@ -87,6 +90,7 @@ draw() {
     this.addToMap(this.character);
     this.addObjectsToMap(this.level.clouds);
     this.addObjectsToMap(this.level.coins);
+    this.addObjectsToMap(this.level.bottle);
     this.addObjectsToMap(this.level.enemies);
     this.addObjectsToMap(this.throwableObjects);
 
