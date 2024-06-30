@@ -1,18 +1,47 @@
-class Bottles extends MovableObject { 
+class Bottles extends MovableObject {
+    height = 80;
+    width = 80;
+    y = 380;
     bottleSound = new Audio('audio/jump1.mp3');
-    IMAGES_BOTTLE = [ 
+    brokenBottleSound = new Audio('audio/borkenGlass.mp3');
+
+    IMAGES_BOTTLE = [
         'img/6_salsa_bottle/1_salsa_bottle_on_ground.png',
         'img/6_salsa_bottle/2_salsa_bottle_on_ground.png'
     ];
+    IMAGES_BOTTLE_ROTATION = [
+        'img/6_salsa_bottle/bottle_rotation/1_bottle_rotation.png',
+        'img/6_salsa_bottle/bottle_rotation/2_bottle_rotation.png',
+        'img/6_salsa_bottle/bottle_rotation/3_bottle_rotation.png',
+        'img/6_salsa_bottle/bottle_rotation/4_bottle_rotation.png'
+    ];
 
-    constructor(x, y) {
-        super().loadImage("img/6_salsa_bottle/1_salsa_bottle_on_ground.png");
+    IMAGES_BOTTLE_SPLASH = [
+        'img/6_salsa_bottle/bottle_rotation/bottle_splash/1_bottle_splash.png',
+        'img/6_salsa_bottle/bottle_rotation/bottle_splash/2_bottle_splash.png',
+        'img/6_salsa_bottle/bottle_rotation/bottle_splash/3_bottle_splash.png',
+        'img/6_salsa_bottle/bottle_rotation/bottle_splash/4_bottle_splash.png',
+        'img/6_salsa_bottle/bottle_rotation/bottle_splash/5_bottle_splash.png',
+        'img/6_salsa_bottle/bottle_rotation/bottle_splash/6_bottle_splash.png'
+    ];
+
+    constructor() {
+        super();
+        let randomIndex = Math.floor(Math.random() * this.IMAGES_BOTTLE.length);
+        this.loadImage(this.IMAGES_BOTTLE[randomIndex]);
         this.loadImages(this.IMAGES_BOTTLE);
-        this.width = 120;
-        this.height = 120;
-        this.x = 400 + Math.random() * 719 * 3 - 700; // Zahl zwischen 200 und 700px
-        this.y = 380 - Math.random() * 150;
-        this.loadImages(this.IMAGES_BOTTLE);
-     
+        this.x = 50 + Math.random() * 719 * 3;
+    }
+
+    playBottleSound() {
+        if (!muted) {
+            this.bottleSound.play();
+        }
+    }
+
+    playBrokenBottleSound() {
+        if (!muted) {
+            this.brokenBottleSound.play();
+        }
     }
 }

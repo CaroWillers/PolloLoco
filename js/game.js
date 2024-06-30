@@ -1,6 +1,8 @@
 let canvas;
 let world;
 let keyboard = new Keyboard();
+let muted = false;
+let introMusic = new Audio('audio/intro.mp3');
 
 function init() {
     initLevel();
@@ -58,13 +60,14 @@ window.addEventListener('keyup', (event) => {
 
 function showOverlay(overlayId) {
     document.getElementById(overlayId).style.display = 'flex';
-    document.body.classList.add(overlayId + '-active');
+    document.body.classList.add('overlay-active');
 }
 
 function closeOverlay(overlayId) {
     document.getElementById(overlayId).style.display = 'none';
-    document.body.classList.remove(overlayId + '-active');
+    document.body.classList.remove('overlay-active');
 }
+
  
 function drawStartScreen() {
     let canvas = document.getElementById('startCanvas');
@@ -78,22 +81,37 @@ function drawStartScreen() {
     };
 }
 
-function startGame() {
-    document.querySelector('.container').style.display = 'none';
+function startGame() { 
+    introMusic.pause();  
+    introMusic.currentTime = 0; 
+    document.getElementById('container').style.display = 'none'; 
     document.getElementById('canvas').style.display = 'block';
+    document.getElementById('iconContainer').style.display = 'flex';  
     init();
 }
 
-function restartGame() {
-    location.reload();
+function startIntroMusic() {
+    introMusic.loop = true; 
+    if (!muted) {
+        this.introMusic.play();
+    }   
 }
+
+function restartGame() {
+    document.getElementById('gameOver').style.display = 'none';
+    let canvas = document.getElementById('canvas');
+    let keyboard = new Keyboard();
+    new World(canvas, keyboard);
+}
+
 
 window.onload = drawStartScreen;
 
 //Fullscreen//
-function fullscreen() {
+function toggleFullscreen() {
+    let fullscreenElement = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
     let fullscreen = document.getElementById('fullscreen');
-    enterFullscreen(fullscreen);
+    fullscreenElement ? exitFullscreen() : enterFullscreen(fullscreen);
 }
 
 function enterFullscreen(element) {
@@ -119,3 +137,19 @@ function exitFullscreen() {
         document.msExitFullscreen();
     }
 }
+
+function muteSound() {
+    muted = !muted;
+    let muteButtonIcon = document.getElementById('muteButtonIcon');
+        if (muteButtonIcon) {
+            muteButtonIcon.src = muted ? 'img/icons/mute.png' : 'img/icons/soundON.png';
+        }
+    
+    // Get all audio elements and update their muted property
+    document.querySelectorAll('audio').forEach(audio => {
+        audio.muted = muted;
+    });
+    introMusic.muted = muted;
+}
+
+  

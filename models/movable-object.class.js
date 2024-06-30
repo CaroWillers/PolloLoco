@@ -3,8 +3,11 @@ class MovableObject extends DrawableObject {
     otherDirection = false;
     speedY = 0;
     acceleration = 2.5;
-    energy = 100;  
+    health = 100;  
     lastHit = 0; 
+    world;
+    movingInterval;
+    animationInterval;
 
 applyGravity() {
     setInterval(() => {
@@ -23,17 +26,19 @@ isAboveGround() {
     }
 }
 
-    isColliding(mo) { 
-        return (this.x + this.width) > mo.x &&
-            this.y + this.height > mo.x && 
-            this.x < mo.x &&
-            this.y < mo.y + mo.height;
-    }
+isColliding(mo) { 
+    return (this.x + this.width) > mo.x &&
+           this.x < (mo.x + mo.width) &&
+           this.y + this.height > mo.y &&
+           this.y < (mo.y + mo.height);
+}
 
-    hit() { 
-        this.energy -= 5;
+
+hit() { 
+    this.energy -= 5;
         if(this.energy <= 0) {
             this.energy = 0; 
+            punchSound.play();
         } else {
             this.lastHit = new Date().getTime(); }
     }
@@ -41,11 +46,19 @@ isAboveGround() {
     isHurt() {  
         let timepassed = new Date().getTime() - this.lastHit;
         timepassed = timepassed / 1000;
-        return timepassed < 1; 
+        if (timepassed < 1) {
+            this.playpainSound();
+            return true;
+        }
+        return false; 
     }
 
     isDead() {
-        return this.energy == 0;
+        if (this.health == 0) {
+            this.playdeadSound();
+            return true;
+        }
+        return false;
     }
     
     playAnimation(images) { 
@@ -67,4 +80,26 @@ isAboveGround() {
     jump() {
         this.speedY = 30;
     }   
+
+    isFalling() {
+        return this.speedY < 0;
+    }
+
+    die() {
+        this.loadImage(this.IMAGES_DEAD[0]);
+        this.speed = 0;
+        clearInterval(this.movingInterval);
+        clearInterval(this.animationInterval);
+        setTimeout(() => {
+            this.remove();
+        }, 1000);
+    }
+
+    remove() {
+        const index = this.world.level.enemies.indexOf(this);
+        if (index > -1) {
+            this.world.level.enemies.splice(index, 1);
+        }
+    }
 }
+    
