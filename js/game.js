@@ -56,15 +56,14 @@ window.addEventListener('keyup', (event) => {
     }
 });
 
-
-function showOverlay() {
-    document.getElementById('storyOverlay').style.display = 'flex';
-    document.body.classList.add('overlay-active');
+function showOverlay(overlayId) {
+    document.getElementById(overlayId).style.display = 'flex';
+    document.body.classList.add(overlayId + '-active');
 }
 
-function closeOverlay() {
-    document.getElementById('storyOverlay').style.display = 'none';
-    document.body.classList.remove('overlay-active');
+function closeOverlay(overlayId) {
+    document.getElementById(overlayId).style.display = 'none';
+    document.body.classList.remove(overlayId + '-active');
 }
  
 function drawStartScreen() {

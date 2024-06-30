@@ -30,7 +30,7 @@
     <div class="header">
         <h1>EL POLLO LOCO</h1>
         <h2>Join Pepe on a wild desert adventure to defeat the giant chicken and save the day!</h2>
-        <button class="story-button" onclick="showOverlay()">Learn more about the story of Pepe</button>
+        <button class="story-button" onclick="showOverlay('storyOverlay')">Learn more about the story of Pepe</button>
     </div>
    
     <div class="start-screen-container">
@@ -58,27 +58,39 @@
             <div class="tooltip">Pepe throws bottle.</div>
         </li>
         </ul> 
+        <button class="story-button" onclick="showOverlay('gameRulesOverlay')">Game Rules</button>
     </div>
 </div>     
+
 <div class="overlay" id="storyOverlay">
     <div class="overlay-content">
         <h2>The Story of Pepe</h2>
         <p>Pepe, the brave Mexican, embarks on an exciting adventure through the hot desert. Along his journey, he encounters dangerous enemies in the form of wild chickens blocking his way.<br><br>However, Pepe can defeat these chickens with throwing bottles he collects from the ground. Besides the chickens, there are also valuable coins to be found in the desert, which Pepe can collect to regain health.<br><br>At the end of his journey, a great final boss - a giant chicken - awaits to be defeated in order to win the game.</p>
-        <button class="close-button" onclick="closeOverlay()">Close</button>
+        <button class="close-button" onclick="closeOverlay('storyOverlay')">Close</button>
     </div>
+</div>
 
-    <footer>
-        <a onclick="window.location.href='./privacy-policy.html'">Datenschutzerklärung/Impressum</a> 
-   </footer>
-</div> 
+<div class="overlay" id="gameRulesOverlay">
+    <div class="overlay-content">
+        <h2>Game Rules</h2>
+        <p>Pepe can move left and right using the arrow keys and jump using the spacebar. Collect bottles and coins scattered throughout the desert.<br><br>
+        - <strong>Health Bar:</strong> Shows Pepe's remaining health.<br>
+        - <strong>Bottle Bar:</strong> Shows the number of collected bottles.<br>
+        - <strong>Coin Bar:</strong> Shows the number of collected coins.<br><br>
+        Pepe can defeat chickens by jumping on them or throwing collected bottles. The final boss, a giant chicken, can be defeated by hitting it multiple times with bottles or jumping on it.<br><br>
+        - <strong>Winning:</strong> Defeat the final boss.<br>
+        - <strong>Losing:</strong> Pepe's health bar reaches zero.<br><br>
+        Coins restore health. Bottles break upon impact and are removed from the inventory. Use strategic moves to navigate through enemies and obstacles to win the game.</p>
+        <button class="close-button" onclick="closeOverlay('gameRulesOverlay')">Close</button>
+    </div>
+</div>
 
-<div id="fullscreen" > 
+<footer>
+    <a onclick="window.location.href='./privacy-policy.html'">Datenschutzerklärung/Impressum</a> 
+</footer>
+
+<div id="fullscreen"> 
     <canvas id="canvas" class="canvas" width="720" height="480" style="display: none;"></canvas>
 </div>
- 
-
-
-    
 </body>
 </html>
-
