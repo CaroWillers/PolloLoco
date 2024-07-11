@@ -27,8 +27,6 @@ function initLevel() {
             new Bottles(),
             new Bottles(),
             new Bottles(),
-            new Bottles(),
-            new Bottles(),
             new Bottles()
         ]
     ); 

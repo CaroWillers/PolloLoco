@@ -27,28 +27,28 @@ class Chicken extends MovableObject {
         this.animate();
     }
 
-    animate() {
-        this.movingInterval = setInterval(() => {
-            this.moveLeft();
-        }, 1000 / 60);
+animate() {
+    this.movingInterval = setInterval(() => {
+        this.moveLeft();
+    }, 1000 / 60);
 
-        this.animationInterval = setInterval(() => {
-            this.playAnimation(this.IMAGES_WALKING);        
-        }, 200);
-    }
+    this.animationInterval = setInterval(() => {
+        this.playAnimation(this.IMAGES_WALKING);        
+    }, 200);
+}
 
- die() {
-        this.loadImage(this.IMAGES_DEAD[0]);
-        this.speed = 0;
-        clearInterval(this.movingInterval);
-        clearInterval(this.animationInterval);
-        setTimeout(() => {
-            this.remove();
-        }, 1000);
-    }
+die() {
+    this.loadImage(this.IMAGES_DEAD[0]);
+    this.speed = 0;
+    clearInterval(this.movingInterval);
+    clearInterval(this.animationInterval);
+    setTimeout(() => {
+        this.remove();
+    }, 1000);
+}
 
-    remove() {
-        const index = this.world.level.enemies.indexOf(this);
+remove() {
+    let index = this.world.level.enemies.indexOf(this);
         if (index > -1) {
             this.world.level.enemies.splice(index, 1);
         }

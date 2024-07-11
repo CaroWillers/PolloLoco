@@ -168,6 +168,8 @@ class Character extends MovableObject {
         setTimeout(() => {
             this.remove();
         }, 500);
+        this.health = 0;
+        this.world.statusBarHealth.setPercentage(this.health);
         this.world.gameOver();
     }
 

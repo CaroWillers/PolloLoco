@@ -60,17 +60,16 @@ checkThrowObjects() {
 
 checkCollisions() {
     this.checkCoinCollisions(); 
-    this.checkBottleCollisions();
-    this.handleEnemyHit();
-    this.checkEnemyCollisions(); 
-    this.handleCharacterHitByEnemy();
+    this.checkBottleCollisions(); 
+    this.checkEnemyCollisions();  
 }
 
 checkCoinCollisions() {
     this.level.coins.forEach((coin, index) => {
         if (this.character.isColliding(coin)) { 
             this.coinCounter++;
-            this.statusBarCoin.setPercentage((this.coinCounter / this.level.coins.length) * 100);
+            let percentage = (this.coinCounter / 5) * 100; 
+            this.statusBarCoin.setPercentage(percentage);            
             this.level.coins.splice(index, 1);  
             coin.playCoinSound();  
         }
@@ -88,41 +87,21 @@ checkBottleCollisions() {
     });
 }
 
-handleEnemyHit(enemy) {
-    if (this.character.isFalling() && this.character.y + this.character.height < enemy.y + enemy.height / 2) {
-        enemy.die();
-        this.character.playKilledEnemySound();
-    } else {
-        if (enemy instanceof Chicken) {
-            this.character.hit();
-            this.statusBarHealth.setPercentage(this.character.health);
-            if (this.character.isDead()) {
-                this.character.die();
-            }
-        } else if (enemy instanceof Endboss) {
-            this.character.die();
-        }
-    }
-}
-
 checkEnemyCollisions() {
     this.level.enemies.forEach(enemy => {
-        if (enemy.isColliding(this.character)) {
-            this.handleCharacterHitByEnemy(enemy);
+        if (this.character.isColliding(enemy)) {
+            if (this.character.isFalling() && this.character.y + this.character.height < enemy.y + enemy.height / 2) {
+                enemy.die();
+                this.character.playKilledEnemySound();  
+            } else {
+                this.character.hit();
+                this.statusBarHealth.setPercentage(this.character.health);
+                if (this.character.isDead()) {
+                    this.character.die(); 
+                }
+            }
         }
     });
-}
-
-handleCharacterHitByEnemy(enemy) {
-    if (enemy instanceof Chicken) {
-        this.character.hit();
-        this.statusBarHealth.setPercentage(this.character.health);
-        if (this.character.isDead()) {
-            this.character.die();
-        }
-    } else if (enemy instanceof Endboss) {
-        this.character.die();
-    }
 }
 
 youWin() {
