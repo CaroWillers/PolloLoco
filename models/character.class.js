@@ -4,7 +4,7 @@ class Character extends MovableObject {
     height = 280;
     health = 100;
     hitCooldown = false;  
-    punchSound = new Audio('audio/punch.mp3'); 
+    hitSound = new Audio('audio/hit.mp3'); 
     deadSound = new Audio('audio/dead.mp3');
     killedEnemySound = new Audio('audio/killedEnemy.mp3');
 
@@ -69,11 +69,16 @@ class Character extends MovableObject {
         this.loadImages(this.IMAGES_DEAD);
         this.applyGravity();
         this.x = 100;
-        this.y = 300 - this.height;
+        this.y = 180; 
         this.animate();
     }
 
     animate() {
+        this.handleMovement();
+        this.handleAnimation();
+    }
+
+    handleMovement() {
         setInterval(() => {
             this.walking_sound.pause();
             if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
@@ -88,17 +93,19 @@ class Character extends MovableObject {
                 this.walking_sound.play();
             }
 
-            if(this.world.keyboard.SPACE && !this.isAboveGround()) {
+            if (this.world.keyboard.SPACE && !this.isAboveGround()) {
                 this.jump();
             }
 
             this.world.camera_x = -this.x + 100;
         }, 1000 / 60);
+    }
 
+    handleAnimation() {
         setInterval(() => {
             if (this.isDead()) {
                 this.die();
-            } else if(this.isHurt()) {
+            } else if (this.isHurt()) {
                 this.playAnimation(this.IMAGES_HURT);
             } else if (this.isAboveGround()) {
                 this.playAnimation(this.IMAGES_JUMPING);
@@ -110,15 +117,17 @@ class Character extends MovableObject {
         }, 50);
     }
 
-
     jump() {
         this.speedY = 30;
     }
 
+    isAboveGround() {
+        return this.y < 180; 
+    }
 
-    playpunchSound() {
+    playhitSound() {
         if (!muted) {
-            this.punchSound.play();
+            this.hitSound.play();
         }
     }
 
@@ -134,20 +143,21 @@ class Character extends MovableObject {
         }
     }
 
-
     hit() {
-        if (!this.hitCooldown) {  
+        if (!this.hitCooldown) {
             this.health -= 5;
+            this.world.statusBarHealth.setPercentage(this.health);
+            this.playhitSound();
+
             if (this.health <= 0) {
                 this.health = 0;
                 this.die();
             } else {
                 this.lastHit = new Date().getTime();
-                this.playpainSound();
-                this.hitCooldown = true;  
+                this.hitCooldown = true;
                 setTimeout(() => {
-                    this.hitCooldown = false;  
-                }, 1000);  
+                    this.hitCooldown = false;
+                }, 2000);
             }
         }
     }

@@ -3,7 +3,7 @@ class Bottles extends MovableObject {
     width = 80;
     y = 380;
     bottleSound = new Audio('audio/jump1.mp3');
-    brokenBottleSound = new Audio('audio/borkenGlass.mp3');
+    brokenBottleSound = new Audio('audio/glass.mp3');
 
     IMAGES_BOTTLE = [
         'img/6_salsa_bottle/1_salsa_bottle_on_ground.png',
@@ -30,7 +30,7 @@ class Bottles extends MovableObject {
         let randomIndex = Math.floor(Math.random() * this.IMAGES_BOTTLE.length);
         this.loadImage(this.IMAGES_BOTTLE[randomIndex]);
         this.loadImages(this.IMAGES_BOTTLE);
-        this.x = 50 + Math.random() * 719 * 3;
+        this.x = 250 + Math.random() * 719 * 4; 
     }
 
     playBottleSound() {

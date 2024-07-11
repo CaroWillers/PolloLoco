@@ -1,4 +1,5 @@
 let level1;
+let level_end_x = 3500;
 
 function initLevel() {
     level1 = new Level(
@@ -12,10 +13,8 @@ function initLevel() {
             new ChickenSmall(),
             new Endboss()
         ],
-        [
-            new Cloud()
-        ],
-        generateInitialBackgroundObjects(),  // Changed to use function to generate initial background objects
+        generateClouds(),
+        generateInitialBackgroundObjects(), 
         [
             new Coins(),
             new Coins(),
@@ -33,14 +32,28 @@ function initLevel() {
             new Bottles(),
             new Bottles()
         ]
-    );
-    console.log('Level initialized:', level1);
+    ); 
+}
+
+
+function generateClouds(world) {
+    let clouds = [];
+    let segmentWidth = 719;
+    let cloudCount = Math.ceil(level_end_x / segmentWidth);
+
+    for (let i = 0; i < cloudCount; i++) {
+        const cloud = new Cloud(world);
+        cloud.x = i * segmentWidth;  
+        clouds.push(cloud);
+    }
+
+    return clouds;
 }
 
 function generateInitialBackgroundObjects() {
-    const segmentWidth = 719;
-    const initialRepeats = 5; // Initial number of times to repeat the background
-    const backgroundObjects = [];
+    let segmentWidth = 719;
+    let initialRepeats = 5; // Initial number of times to repeat the background
+    let backgroundObjects = [];
 
     for (let i = 0; i < initialRepeats; i++) {
         addBackgroundSegment(backgroundObjects, i * segmentWidth * 2); // *2 to account for two sets of layers
