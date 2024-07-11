@@ -1,29 +1,29 @@
 class StatusBar extends DrawableObject {
     IMAGES_COIN_STATUS = [
-        'img/7_statusbars/1_statusbar/1_statusbar_coin/blue/0.png',
-        'img/7_statusbars/1_statusbar/1_statusbar_coin/blue/20.png',
-        'img/7_statusbars/1_statusbar/1_statusbar_coin/blue/40.png',
-        'img/7_statusbars/1_statusbar/1_statusbar_coin/blue/60.png',
-        'img/7_statusbars/1_statusbar/1_statusbar_coin/blue/80.png',
-        'img/7_statusbars/1_statusbar/1_statusbar_coin/blue/100.png'
+        'img/7_statusbars/1_statusbar/1_statusbar_coin/green/0.png',
+        'img/7_statusbars/1_statusbar/1_statusbar_coin/green/20.png',
+        'img/7_statusbars/1_statusbar/1_statusbar_coin/green/40.png',
+        'img/7_statusbars/1_statusbar/1_statusbar_coin/green/60.png',
+        'img/7_statusbars/1_statusbar/1_statusbar_coin/green/80.png',
+        'img/7_statusbars/1_statusbar/1_statusbar_coin/green/100.png'
     ];
 
     IMAGES_HEALTH_STATUS = [
-        'img/7_statusbars/1_statusbar/2_statusbar_health/blue/0.png',
-        'img/7_statusbars/1_statusbar/2_statusbar_health/blue/20.png',
-        'img/7_statusbars/1_statusbar/2_statusbar_health/blue/40.png',
-        'img/7_statusbars/1_statusbar/2_statusbar_health/blue/60.png',
-        'img/7_statusbars/1_statusbar/2_statusbar_health/blue/80.png',
-        'img/7_statusbars/1_statusbar/2_statusbar_health/blue/100.png'
+        'img/7_statusbars/1_statusbar/2_statusbar_health/green/0.png',
+        'img/7_statusbars/1_statusbar/2_statusbar_health/green/20.png',
+        'img/7_statusbars/1_statusbar/2_statusbar_health/green/40.png',
+        'img/7_statusbars/1_statusbar/2_statusbar_health/green/60.png',
+        'img/7_statusbars/1_statusbar/2_statusbar_health/green/80.png',
+        'img/7_statusbars/1_statusbar/2_statusbar_health/green/100.png'
     ];
 
     IMAGES_BOTTLE_STATUS = [
-        'img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/0.png',
-        'img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/20.png', 
-        'img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/40.png',
-        'img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/60.png',
-        'img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/80.png',
-        'img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/100.png'
+        'img/7_statusbars/1_statusbar/3_statusbar_bottle/green/0.png',
+        'img/7_statusbars/1_statusbar/3_statusbar_bottle/green/20.png', 
+        'img/7_statusbars/1_statusbar/3_statusbar_bottle/green/40.png',
+        'img/7_statusbars/1_statusbar/3_statusbar_bottle/green/60.png',
+        'img/7_statusbars/1_statusbar/3_statusbar_bottle/green/80.png',
+        'img/7_statusbars/1_statusbar/3_statusbar_bottle/green/100.png'
     ];
 
     percentage = 100;
@@ -36,23 +36,25 @@ class StatusBar extends DrawableObject {
             this.loadImages(this.IMAGES_COIN_STATUS);
             this.x = 30;
             this.y = 45;
+            this.setPercentage(0);
         } else if (type === 'health') {
             this.loadImages(this.IMAGES_HEALTH_STATUS);
             this.x = 30;
             this.y = 0;
+            this.setPercentage(100);
         } else if (type === 'bottle') {
             this.loadImages(this.IMAGES_BOTTLE_STATUS);
             this.x = 30;
             this.y = 90;
+            this.setPercentage(0);
         }
 
         this.width = 200;
-        this.height = 60;
-        this.setPercentage(100);
+        this.height = 60; 
     }
 
     setPercentage(percentage) { 
-        this.percentage = percentage; // => 0 ...5
+        this.percentage = percentage; 
         let path;
         if (this.statusType === 'coin') {
             path = this.IMAGES_COIN_STATUS[this.resolveImageIndex(percentage)];

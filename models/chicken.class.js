@@ -14,7 +14,7 @@ class Chicken extends MovableObject {
         'img/3_enemies_chicken/chicken_normal/2_dead/dead.png'
     ];
 
-    walking_sound = new Audio('audio/chicken.mp3');
+    walking_sound = new Audio('audio/walkGrass.mp3');
 
     constructor(world) {
         super().loadImage('img/3_enemies_chicken/chicken_normal/1_walk/1_w.png');

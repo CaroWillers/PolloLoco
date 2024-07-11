@@ -2,7 +2,7 @@ class Bottles extends MovableObject {
     height = 80;
     width = 80;
     y = 380;
-    bottleSound = new Audio('audio/jump1.mp3');
+    bottleSound = new Audio('audio/bottle.mp3');
     brokenBottleSound = new Audio('audio/glass.mp3');
 
     IMAGES_BOTTLE = [

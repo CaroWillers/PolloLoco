@@ -68,7 +68,7 @@ class Endboss extends MovableObject {
                 this.endbossDead();
             } else if (distance <= 200) {
                 this.endbossAttack();
-            } else if (distance <= 450) {
+            } else if (distance <= 550) {
                 this.endbossWalk();
             } else {
                 this.endbossAlert();

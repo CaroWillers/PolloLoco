@@ -61,8 +61,9 @@ checkThrowObjects() {
 checkCollisions() {
     this.checkCoinCollisions(); 
     this.checkBottleCollisions();
-    this.checkCharacterCollisions();
+    this.handleEnemyHit();
     this.checkEnemyCollisions(); 
+    this.handleCharacterHitByEnemy();
 }
 
 checkCoinCollisions() {
@@ -83,15 +84,6 @@ checkBottleCollisions() {
             this.statusBarBottle.setPercentage((this.bottleCounter / this.level.bottle.length) * 100);
             this.level.bottle.splice(index, 1);  
             bottle.playBottleSound();  
-        }
-    });
-}
-
-
-checkCharacterCollisions() {
-    this.level.enemies.forEach(enemy => {
-        if (this.character.isColliding(enemy)) {
-            this.handleEnemyHit(enemy);
         }
     });
 }
