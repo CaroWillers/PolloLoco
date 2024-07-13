@@ -3,6 +3,7 @@ class Character extends MovableObject {
     y = 120;
     height = 280;
     health = 100;
+    collectedBottles = 0; 
     hitCooldown = false;  
     hitSound = new Audio('audio/hit.mp3'); 
     deadSound = new Audio('audio/dead.mp3');
@@ -57,6 +58,13 @@ class Character extends MovableObject {
         'img/2_character_pepe/5_dead/D-57.png'
     ];
 
+    offset = {
+        top: 200,
+        left: 20,
+        right: 20,
+        bottom: 10
+    };
+
     world;
     walking_sound = new Audio('audio/walking.mp3');
 
@@ -69,7 +77,7 @@ class Character extends MovableObject {
         this.loadImages(this.IMAGES_DEAD);
         this.applyGravity();
         this.x = 100;
-        this.y = 180; 
+        this.y = 180;  
         this.animate();
     }
 
@@ -117,30 +125,17 @@ class Character extends MovableObject {
         }, 50);
     }
 
+    setIdle() {
+        this.playAnimation(this.IMAGES_IDLE);
+    }
+
+
     jump() {
         this.speedY = 30;
     }
 
     isAboveGround() {
         return this.y < 180; 
-    }
-
-    playhitSound() {
-        if (!muted) {
-            this.hitSound.play();
-        }
-    }
-
-    playdeadSound() {
-        if (!muted) {
-            this.deadSound.play();
-        }
-    }
-
-    playKilledEnemySound() {
-        if (!muted) {
-            this.killedEnemySound.play();
-        }
     }
 
     hit() {
@@ -157,7 +152,7 @@ class Character extends MovableObject {
                 this.hitCooldown = true;
                 setTimeout(() => {
                     this.hitCooldown = false;
-                }, 2000);
+                }, 1500);
             }
         }
     }
@@ -170,7 +165,7 @@ class Character extends MovableObject {
         }, 500);
         this.health = 0;
         this.world.statusBarHealth.setPercentage(this.health);
-        this.world.gameOver();
+        this.world.lostGame();
     }
 
     isHurt() {
@@ -180,10 +175,40 @@ class Character extends MovableObject {
     }
 
     isDead() {
-        return this.health == 0;
+        return this.health == 0;  
     }
 
     remove() {
         this.world.character = null;
+    }
+
+    playhitSound() {
+        if (!muted) {
+            this.hitSound.play();
+            setTimeout(() => {
+                this.hitSound.pause();
+                this.hitSound.currentTime = 0;
+            }, 2000);  
+        }
+    }
+    
+    playdeadSound() {
+        if (!muted) {
+            this.deadSound.play();
+            setTimeout(() => {
+                this.deadSound.pause();
+                this.deadSound.currentTime = 0;
+            }, 1500); 
+        }
+    }
+    
+    playKilledEnemySound() {
+        if (!muted) {
+            this.killedEnemySound.play();
+            setTimeout(() => {
+                this.killedEnemySound.pause();
+                this.killedEnemySound.currentTime = 0;
+            }, 2000);  
+        }
     }
 }

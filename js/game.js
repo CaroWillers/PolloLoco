@@ -29,7 +29,8 @@ window.addEventListener('keydown', (event) => {
             break;
         case 'd': // Taste 'd'
         case 'D': // Taste 'D'
-            keyboard.D = true;
+            console.log("Key 'd' or 'D' pressed");
+            keyboard.D = true; 
             break;
     }
 });
@@ -53,7 +54,8 @@ window.addEventListener('keyup', (event) => {
             break;
         case 'd': // Taste 'd'
         case 'D': // Taste 'D'
-            keyboard.D = true;
+            console.log("Key 'd' or 'D' released");
+            keyboard.D = false;
             break;
     }
 });

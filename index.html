@@ -12,14 +12,14 @@
     <script src="models/chicken.class.js"></script>
     <script src="models/chicken-small.class.js"></script>
     <script src="models/coins.class.js"></script>
-    <script src="models/bottles.class.js"></script>
+    <script src="models/bottle.class.js"></script>
+    <script src="models/throwableObjects.class.js"></script>
     <script src="models/cloud.class.js"></script>
     <script src="models/status-bar.class.js"></script>
     <script src="models/world.class.js"></script> 
     <script src="models/background-object.class.js"></script>
     <script src="models/keyboard.class.js"></script>
     <script src="models/level.class.js"></script>
-    <script src="models/throwable-object.class.js"></script>
     <script src="models/endboss.class.js"></script>
     <script src="levels/level1.js"></script>
     <script src="js/game.js"></script>
@@ -96,15 +96,26 @@
 <div id="fullscreen"> 
     <canvas id="canvas" class="canvas" width="720" height="480" style="display: none;"></canvas>
 </div>
+
+<div class="game-over" id="youWin" style="display: none;">
+    <div class="game-over-content">
+        <img src="img/9_intro_outro_screens/win/win_2.png" width="720" height="480">
+        <button class="start-button" onclick="restartGame()">RESTART GAME</button>
+    </div>
+    <div>
+        <h2>You win</h2>
+        <p>Pepe has been defeated by the giant chicken. Would you like to try again?</p> 
+    </div>
+</div>
  
-<div class="game-over" id="gameOver" style="display: none;">
+<div class="game-over" id="lostGame" style="display: none;">
     <div class="game-over-content">
         <img src="img/9_intro_outro_screens/game_over/oh no you lost!.png" width="720" height="480">
-        <button class="restart-button" onclick="restartGame()">RESTART GAME</button>
+        <button class="start-button" onclick="restartGame()">RESTART GAME</button>
     </div>
     <div>
         <h2>Game Over</h2>
-        <p>Pepe has been defeated by the giant chicken. Would you like to try again?</p> 
+        <p>Unfortunately Pepe could not defeat the giant chicken. Would you like to try again?</p> 
     </div>
 </div>
 

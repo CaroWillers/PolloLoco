@@ -23,11 +23,11 @@ function initLevel() {
             new Coins()
         ],
         [
-            new Bottles(),
-            new Bottles(),
-            new Bottles(),
-            new Bottles(),
-            new Bottles()
+            new Bottle(),
+            new Bottle(),
+            new Bottle(),
+            new Bottle(),
+            new Bottle()
         ]
     ); 
 }

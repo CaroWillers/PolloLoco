@@ -3,10 +3,11 @@ class Endboss extends MovableObject {
     width = 300;
     y = -10;
     speed = 10;
-    hitCount = 0;
+    health = 2;
     endbossSound = new Audio('audio/endboss.mp3');
     endbossHurtSound = new Audio('audio/hurt.mp3');
     endbossDeadSound = new Audio('audio/dead.mp3');
+
 
     IMAGES_WALKING = [
         "img/4_enemie_boss_chicken/1_walk/G1.png",
@@ -84,7 +85,7 @@ class Endboss extends MovableObject {
     }
 
     endbossAlert() {
-        this.playAnimation(this.IMAGES_ALERT);
+        this.playAnimation(this.IMAGES_ALERT);  
     }
 
     endbossWalk() {
@@ -102,7 +103,7 @@ class Endboss extends MovableObject {
     }
 
     isTouchingCharacter() {
-        const distance = this.calculatedDistance();
+        let distance = this.calculatedDistance();
         return distance <= 100;
     }
 
@@ -111,44 +112,65 @@ class Endboss extends MovableObject {
         this.playEndbossDeadSound();
         setTimeout(() => {
             this.removeEndboss();
-        }, 1000);
-        this.world.youWin();
+        }, 1000);  
     }
 
-    isDead() {
-        return this.hitCount >= 3;
+    hit() {
+        this.health -= 1;
+        if (this.health <= 0) {
+            this.die();
+        } else {
+            this.playEndbossHurtSound();
+            this.playAnimation(this.IMAGES_HURT);
+        }
     }
+
+
+    die() {
+        this.loadImage('img/4_enemie_boss_chicken/5_dead/G24.png');  
+        setTimeout(() => {
+            this.remove();
+            this.removeEndboss();
+        }, 1000);  
+        }
+    
+
+    removeEndboss() {
+        let index = this.world.level.enemies.indexOf(this);
+        if (index > -1) {
+            this.world.level.enemies.splice(index, 1);
+        }
+        this.world.winGame();  
+    }
+
 
     playEndbossSound() {
         if (!muted) {
             this.endbossSound.play();
+            setTimeout(() => {
+                this.endbossSound.pause();
+                this.endbossSound.currentTime = 0;  
+            }, 2000);  
         }
     }
 
     playEndbossHurtSound() {
         if (!muted) {
             this.endbossHurtSound.play();
+            setTimeout(() => {
+                this.endbossHurtSound.pause();
+                this.endbossHurtSound.currentTime = 0;  
+            }, 2000);  
         }
     }
 
     playEndbossDeadSound() {
         if (!muted) {
             this.endbossDeadSound.play();
-        }
-    }
-
-    hitByBottle() {
-        this.hitCount++;
-        this.playEndbossHurtSound();
-        if (this.isDead()) {
-            this.endbossDead();
-        }
-    }
-
-    removeEndboss() {
-        const index = this.world.level.enemies.indexOf(this);
-        if (index > -1) {
-            this.world.level.enemies.splice(index, 1);
+            setTimeout(() => {
+                this.endbossDeadSound.pause();
+                this.endbossDeadSound.currentTime = 0;  
+            }, 3000); 
         }
     }
 }
