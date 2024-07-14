@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html translate="no" lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -33,12 +33,32 @@
         <button class="story-button" onclick="showOverlay('storyOverlay')">Learn more about the story of Pepe</button>
     </div>
    
-    <div class="start-screen-container">
+    <div id="fullscreen" class="start-screen-container">
         <canvas id="startCanvas" class="start-screen" width="720" height="480"></canvas>
         <button class="start-button" onclick="startGame()">START GAME!</button>
         <div id="iconContainer" class="iconContainer">
             <button onclick="toggleFullscreen()" class="iconButton"><img src="img/icons/maximize.png"></button>
             <button onclick="muteSound()" class="iconButton"><img id="muteButtonIcon" src="img/icons/mute.png"></button>
+        </div>
+        <div class="overlay-buttons">
+            <div id="hud" class="background-cover">
+                <div class="panel-wrapper">
+                    <button class="mobile-button" id="btnLeft" title="Pepe moves left.">
+                        <img src="img/icons/left-arrow.png" alt="Left">
+                    </button>
+                    <button class="mobile-button" id="btnRight" title="Pepe moves right.">
+                        <img src="img/icons/right-arrow.png" alt="Right">
+                    </button>
+                </div>
+                <div class="panel-wrapper">
+                    <button class="mobile-button" id="btnJump" title="Pepe jumps over obstacles or enemies.">
+                        <img src="img/icons/jump.png" alt="Jump">
+                    </button>
+                    <button class="mobile-button" id="btnThrow" title="Pepe throws bottle.">
+                        <img src="img/icons/throwBottle.png" alt="Throw">
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
    
@@ -54,7 +74,7 @@
             <div class="tooltip">Pepe moves right.</div>
         </li>
         <li>
-            <strong>jump:</strong> spacebar
+            <strong>jump:</strong> Spacebar
             <div class="tooltip">Pepe jumps over obstacles or enemies.</div>
         </li>
         <li>
@@ -90,7 +110,7 @@
 </div>
 
 <footer>
-    <a onclick="window.location.href='./privacy-policy.html'">Datenschutzerklärung/Impressum</a> 
+    <a id="DatenschutzImpressum" onclick="window.location.href='./privacy-policy.html'">Datenschutzerklärung/Impressum</a> 
 </footer>
 
 <div id="fullscreen"> 
@@ -98,27 +118,19 @@
 </div>
 
 <div class="game-over" id="youWin" style="display: none;">
+    <div class="game-over-overlay"></div>
     <div class="game-over-content">
-        <img src="img/9_intro_outro_screens/win/win_2.png" width="720" height="480">
+        <img lass="intro-outro-image" src="img/9_intro_outro_screens/win/win_2.png" width="720" height="480">
         <button class="start-button" onclick="restartGame()">RESTART GAME</button>
-    </div>
-    <div>
-        <h2>You win</h2>
-        <p>Pepe has been defeated by the giant chicken. Would you like to try again?</p> 
-    </div>
-</div>
- 
-<div class="game-over" id="lostGame" style="display: none;">
-    <div class="game-over-content">
-        <img src="img/9_intro_outro_screens/game_over/oh no you lost!.png" width="720" height="480">
-        <button class="start-button" onclick="restartGame()">RESTART GAME</button>
-    </div>
-    <div>
-        <h2>Game Over</h2>
-        <p>Unfortunately Pepe could not defeat the giant chicken. Would you like to try again?</p> 
     </div>
 </div>
 
-
+<div class="game-over" id="youLost" style="display: none;">
+    <div class="game-over-overlay"></div>
+    <div class="game-over-content">
+        <img lass="intro-outro-image" src="img/9_intro_outro_screens/game_over/oh no you lost!.png" width="720" height="480">
+        <button class="start-button" onclick="restartGame()">RESTART GAME</button>
+    </div>
+</div>
 </body>
 </html>

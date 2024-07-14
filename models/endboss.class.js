@@ -8,7 +8,6 @@ class Endboss extends MovableObject {
     endbossHurtSound = new Audio('audio/hurt.mp3');
     endbossDeadSound = new Audio('audio/dead.mp3');
 
-
     IMAGES_WALKING = [
         "img/4_enemie_boss_chicken/1_walk/G1.png",
         "img/4_enemie_boss_chicken/1_walk/G2.png",
@@ -98,7 +97,7 @@ class Endboss extends MovableObject {
         this.moveLeft();
         if (this.isTouchingCharacter()) {
             this.world.character.die();
-            this.world.gameOver();  
+            window.lostGame(); // Verloren
         }
     }
 
@@ -108,14 +107,20 @@ class Endboss extends MovableObject {
     }
 
     endbossDead() {
+        if (this.isDead()) {
+            return;
+        }
         this.playAnimation(this.IMAGES_DEAD);
         this.playEndbossDeadSound();
         setTimeout(() => {
             this.removeEndboss();
+            window.winGame();
         }, 1000);  
     }
 
+
     hit() {
+        if (this.isDead()) return;
         this.health -= 1;
         if (this.health <= 0) {
             this.die();
@@ -125,22 +130,28 @@ class Endboss extends MovableObject {
         }
     }
 
-
     die() {
+        if (this.isDead()) {
+            return;
+        }
         this.loadImage('img/4_enemie_boss_chicken/5_dead/G24.png');  
         setTimeout(() => {
             this.remove();
             this.removeEndboss();
+            if (!this.world.winGame) {
+                this.world.winGame = true;
+                this.world.gameOver = true;  
+                window.winGame();
+            }
         }, 1000);  
-        }
-    
+        this.playEndbossDeadSound(); 
+    }
 
     removeEndboss() {
         let index = this.world.level.enemies.indexOf(this);
         if (index > -1) {
             this.world.level.enemies.splice(index, 1);
         }
-        this.world.winGame();  
     }
 
 

@@ -26,11 +26,11 @@ isAboveGround() {
     }
 }
 
-isColliding(mo) {
-    return (this.x + this.width) > mo.x &&
-           this.x < (mo.x + mo.width) &&
-           this.y + this.height > mo.y &&
-           this.y < (mo.y + mo.height);
+isColliding(obj) {
+    return (this.x + this.offset.left < obj.x + obj.width - obj.offset.right &&
+        this.x + this.width - this.offset.right > obj.x + obj.offset.left &&
+        this.y + this.offset.top < obj.y + obj.height - obj.offset.bottom &&
+        this.height + this.y - this.offset.bottom > obj.y + obj.offset.top);
 }
 
 

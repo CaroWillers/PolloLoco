@@ -4,61 +4,88 @@ let keyboard = new Keyboard();
 let muted = false;
 let introMusic = new Audio('audio/intro.mp3');
 
-function init() {
-    initLevel();
-    canvas = document.getElementById('canvas');
-    world = new World(canvas, keyboard); 
+window.winGame = function() {
+    if (this.gameOver) return;  
+    this.gameOver = true;
+    console.log('winGame called');
+    clearInterval(this.runInterval);
+    displayEndBackground();
+    document.getElementById('youWin').style.display = 'flex';
+    hideStatusBars();
+}
+ 
+window.lostGame = function() {
+    if (this.gameOver) return;  
+    this.gameOver = true;
+    console.log('lostGame called');
+    clearInterval(this.runInterval);
+    displayEndBackground();
+    document.getElementById('youLost').style.display = 'flex';
+    hideStatusBars();
 }
 
-window.addEventListener('keydown', (event) => {
-    switch(event.key) {
-        case 'ArrowRight':
-            keyboard.RIGHT = true;
-            break;
-        case 'ArrowLeft':
-            keyboard.LEFT = true;
-            break;
-        case 'ArrowUp':
-            keyboard.UP = true;
-            break;
-        case 'ArrowDown':
-            keyboard.DOWN = true;
-            break;
-        case ' ':
-            keyboard.SPACE = true;
-            break;
-        case 'd': // Taste 'd'
-        case 'D': // Taste 'D'
-            console.log("Key 'd' or 'D' pressed");
-            keyboard.D = true; 
-            break;
+
+
+function displayEndBackground() {
+    let ctx = canvas.getContext('2d');
+    let endImage = new Image();
+    endImage.src = 'img/5_background/second_half_background.png';
+    endImage.onload = () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(endImage, 0, 0, canvas.width, canvas.height);
+    };
+}
+
+function hideStatusBars() {
+    document.querySelectorAll('.status-bar').forEach(bar => {
+        bar.style.display = 'none';
+    });
+}
+
+
+function init() {
+    console.log('Initializing game...');
+    initLevel();
+    canvas = document.getElementById('canvas');
+    if (canvas) {
+        console.log('Canvas found:', canvas);
+        canvas.width = 720;
+        canvas.height = 480;
+        console.log('Canvas size set:', canvas.width, canvas.height);
+    } else {
+        console.error('Canvas not found');
+    }
+    keyboard = new Keyboard();
+    world = new World(canvas, keyboard);
+    console.log('Game initialized:', { canvas, keyboard, world });
+    keyboard.bindBtsPressEvents();
+    console.log('Touch events bound');
+    initEventListeners();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM fully loaded and parsed');
+    drawStartScreen();
+
+    const startButton = document.querySelector('.start-button');
+    if (startButton) {
+        startButton.addEventListener('click', startGame);
+        console.log('Start button found and event listener added');
+    } else {
+        console.error("Start button not found");
     }
 });
 
-window.addEventListener('keyup', (event) => {
-    switch(event.key) {
-        case 'ArrowRight':
-            keyboard.RIGHT = false;
-            break;
-        case 'ArrowLeft':
-            keyboard.LEFT = false;
-            break;
-        case 'ArrowUp':
-            keyboard.UP = false;
-            break;
-        case 'ArrowDown':
-            keyboard.DOWN = false;
-            break;
-        case ' ':
-            keyboard.SPACE = false;
-            break;
-        case 'd': // Taste 'd'
-        case 'D': // Taste 'D'
-            console.log("Key 'd' or 'D' released");
-            keyboard.D = false;
-            break;
+function initEventListeners() {
+    console.log('Initializing event listeners...');
+    if (keyboard) {
+        keyboard.bindKeyPressEvents();
+        console.log('Event listeners initialized');
+    } else {
+        console.error('Keyboard not initialized');
     }
-});
+}
+
 
 function showOverlay(overlayId) {
     document.getElementById(overlayId).style.display = 'flex';
@@ -89,6 +116,7 @@ function startGame() {
     document.getElementById('container').style.display = 'none'; 
     document.getElementById('canvas').style.display = 'block';
     document.getElementById('iconContainer').style.display = 'flex';  
+    document.getElementById('DatenschutzImpressum').style.display = 'none';
     init();
 }
 
@@ -106,6 +134,9 @@ function restartGame() {
     new World(canvas, keyboard);
 }
 
+window.restartGame = function() {
+    location.reload();
+} 
 
 window.onload = drawStartScreen;
 

@@ -11,9 +11,10 @@ class World {
     coinCounter = 0;
     bottleCounter = 0;
     throwableObjects = []; 
-    winGame = false;
-    lostGame = false;
     lastThrowTime = 0;  // Zeitstempel für den letzten Wurf
+    gameOver = false;
+    winGame = false;
+    lostGame = false; 
 
     constructor(canvas, keyboard) {
         this.canvas = canvas;
@@ -66,11 +67,14 @@ class World {
                 this.checkCollisions();
                 this.checkThrowObjects();
                 this.level.clouds.forEach(cloud => cloud.moveLeft());
+            } else {
+                clearInterval(this.runInterval);
             }
         }, 1000 / 60);
     }
 
     checkThrowObjects() {
+        if (this.gameOver) return;
         const currentTime = Date.now();
         if (this.keyboard.D && this.character.collectedBottles > 0 && currentTime - this.lastThrowTime > 500) { 
             this.throwBottle();
@@ -79,6 +83,7 @@ class World {
     }
 
     throwBottle() { 
+        if (this.gameOver) return;
         console.log('Throwing bottle...');
         let bottle = new ThrowableObject(this.character.x + 100, this.character.y + 100);
         this.throwableObjects.push(bottle);
@@ -89,6 +94,7 @@ class World {
     }
 
     checkCollisions() {
+        if (this.gameOver) return;
         this.collectCoins();
         this.collectBottles();
         this.checkBottleCollisions();
@@ -96,6 +102,7 @@ class World {
     }
 
     collectCoins() {
+        if (this.gameOver) return;
         this.level.coins.forEach((coin, index) => {
             if (this.character.isColliding(coin)) {
                 this.coinCounter++;
@@ -108,6 +115,7 @@ class World {
     }
 
     collectBottles() {
+        if (this.gameOver) return;
         this.level.bottle.forEach((bottle, index) => {
             if (this.character.isColliding(bottle)) {
                 console.log('Bottle collected!', bottle);
@@ -123,6 +131,7 @@ class World {
     }
 
     checkBottleCollisions() {
+        if (this.gameOver) return;
         this.throwableObjects.forEach((bottle) => {
             bottle.checkCollision(this.level.enemies);
             bottle.checkGroundCollision();
@@ -130,6 +139,7 @@ class World {
     }
 
     checkEnemyCollisions() {
+        if (this.gameOver) return;
         this.level.enemies.forEach(enemy => {
             if (this.character.isColliding(enemy)) {
                 if (this.character.isFalling() && this.character.y + this.character.height < enemy.y + enemy.height / 2) {
@@ -139,16 +149,23 @@ class World {
                     this.character.hit();
                     this.statusBarHealth.setPercentage(this.character.health);
                     if (this.character.isDead()) {
-                        this.character.die(); 
+                        this.character.die();
+                        if (!this.lostGame) {
+                            this.lostGame = true;
+                            this.gameOver = true;
+                            window.lostGame();
+                        }
                     }
                 }
             }
         });
     }
- 
+
+    
     handleBottleHitEndboss(bottle) {
+        if (this.gameOver) return;  
         console.log('Endboss hit by bottle');
-        console.log('Endboss health before hit:', this.level.endboss?.health);  
+        console.log('Endboss health before hit:', this.level.endboss?.health);
 
         if (this.level.endboss) {
             this.level.endboss.hit();
@@ -161,61 +178,58 @@ class World {
 
             if (this.level.endboss.health <= 0) {
                 this.level.endboss.die();
+                if (!this.winGame) {
+                    this.winGame = true;
+                    this.gameOver = true;
+                    window.winGame();
+                }
             }
         } else {
             console.error('Endboss is not defined');
         }
     }
 
-    winGame() {
-        this.winGame = true;
-        clearInterval(this.runInterval);
-        document.getElementById('youWin').style.display = 'block';
-    }
 
-    lostGame() {
-        this.lostGame = true;
-        clearInterval(this.runInterval);
-        document.getElementById('lostGame').style.display = 'block';
-    }
 
     draw() {
-        if (!this.gameOver) {
+        if (this.gameOver) {
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-            this.ctx.translate(this.camera_x, 0);
-
-            this.addObjectsToMap(this.level.backgroundObjects);
-            this.addObjectsToMap(this.level.clouds);
-
-            this.ctx.translate(-this.camera_x, 0);
-            this.addToMap(this.statusBarHealth);
-            this.addToMap(this.statusBarCoin);
-            this.addToMap(this.statusBarBottle);
-            this.ctx.translate(this.camera_x, 0);
-
-            this.addToMap(this.character);
-            this.addObjectsToMap(this.level.coins);
-            this.addObjectsToMap(this.level.bottle);
-            this.addObjectsToMap(this.level.enemies);
-            this.addObjectsToMap(this.throwableObjects);
-
-            this.ctx.translate(-this.camera_x, 0);
-
-            // Draw() is repeatedly called
-            let self = this;
-            requestAnimationFrame(function() {
-                self.draw();
-            });
-        } else {
-            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-            this.ctx.font = "48px serif";
-            this.ctx.fillText("Game Over", this.canvas.width / 2 - 100, this.canvas.height / 2);
+            return;
         }
+
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        this.ctx.translate(this.camera_x, 0);
+
+        this.addObjectsToMap(this.level.backgroundObjects);
+        this.addObjectsToMap(this.level.clouds);
+
+        this.ctx.translate(-this.camera_x, 0);
+        this.addToMap(this.statusBarHealth);
+        this.addToMap(this.statusBarCoin);
+        this.addToMap(this.statusBarBottle);
+        this.ctx.translate(this.camera_x, 0);
+
+        this.addToMap(this.character);
+        this.addObjectsToMap(this.level.coins);
+        this.addObjectsToMap(this.level.bottle);
+        this.addObjectsToMap(this.level.enemies);
+        this.addObjectsToMap(this.throwableObjects);
+
+        this.ctx.translate(-this.camera_x, 0);
+
+        // Draw() is repeatedly called
+        let self = this;
+        requestAnimationFrame(function() {
+            self.draw();
+        });
     }
 
     addObjectsToMap(objects) {
         objects.forEach(o => {
-            this.addToMap(o);
+            if (!o.isRemoved) {
+                this.addToMap(o);
+            }
         });
     }
 
@@ -242,8 +256,10 @@ class World {
         mo.x = mo.x * -1;
         this.ctx.restore();
     }
-}
 
-window.restartGame = function() {
-    location.reload();
+    hideStatusBars() {
+        document.querySelectorAll('.status-bar').forEach(bar => {
+            bar.style.display = 'none';
+        });
+    }
 }

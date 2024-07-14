@@ -9,6 +9,13 @@ class Character extends MovableObject {
     deadSound = new Audio('audio/dead.mp3');
     killedEnemySound = new Audio('audio/killedEnemy.mp3');
 
+    offset = {
+        top: 150,
+        left: 40,
+        right: 40,
+        bottom: 0
+    };
+
     IMAGES_IDLE = [
         'img/2_character_pepe/1_idle/idle/I-1.png',
         'img/2_character_pepe/1_idle/idle/I-2.png',
@@ -57,13 +64,6 @@ class Character extends MovableObject {
         'img/2_character_pepe/5_dead/D-56.png',
         'img/2_character_pepe/5_dead/D-57.png'
     ];
-
-    offset = {
-        top: 200,
-        left: 20,
-        right: 20,
-        bottom: 10
-    };
 
     world;
     walking_sound = new Audio('audio/walking.mp3');
@@ -131,7 +131,7 @@ class Character extends MovableObject {
 
 
     jump() {
-        this.speedY = 30;
+        this.speedY = 25;
     }
 
     isAboveGround() {
@@ -152,12 +152,13 @@ class Character extends MovableObject {
                 this.hitCooldown = true;
                 setTimeout(() => {
                     this.hitCooldown = false;
-                }, 1500);
+                }, 500);
             }
         }
     }
 
     die() {
+        if (this.isDead()) return;
         this.playAnimation(this.IMAGES_DEAD);
         this.playdeadSound();
         setTimeout(() => {
@@ -165,8 +166,13 @@ class Character extends MovableObject {
         }, 500);
         this.health = 0;
         this.world.statusBarHealth.setPercentage(this.health);
-        this.world.lostGame();
+        if (!this.world.lostGame && !this.world.winGame) {
+            this.world.lostGame = true;
+            this.world.gameOver = true;
+            window.lostGame();
+        }
     }
+
 
     isHurt() {
         let timepassed = new Date().getTime() - this.lastHit;

@@ -58,10 +58,12 @@ class ThrowableObject extends MovableObject {
     }
 
     checkCollision(enemies) {
+        if (this.isRemoved) return;
         enemies.forEach((enemy) => {
             if (this.isColliding(enemy)) {
                 clearInterval(this.animationInterval);
                 clearInterval(this.movementInterval);
+                this.isRemoved = true; // Mark bottle as removed
                 if (enemy instanceof Endboss) {
                     console.log('Bottle collided with Endboss');
                     this.world.handleBottleHitEndboss(this);
@@ -78,8 +80,8 @@ class ThrowableObject extends MovableObject {
     }
 
 
-    removeBottle() { 
-        this.clearImages();  
+    removeBottle() {
+        this.isRemoved = true;
         let index = this.world.throwableObjects.indexOf(this);
         if (index > -1) {
             this.world.throwableObjects.splice(index, 1);
