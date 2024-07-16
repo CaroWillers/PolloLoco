@@ -13,7 +13,7 @@ applyGravity() {
     setInterval(() => {
         if(this.isAboveGround() || this.speedY > 0 ) {   
         this.y -= this.speedY;
-        this.speedY -= this.acceleration;
+        this.speedY -= this.acceleration; 
         }
     }, 1000 / 25);
 }
@@ -22,7 +22,7 @@ isAboveGround() {
     if (this instanceof Bottle) {  
         return true;
         } else {
-        return this.y < 380;
+        return this.y < 340;
     }
 }
 

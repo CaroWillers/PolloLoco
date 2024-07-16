@@ -1,30 +1,28 @@
 let canvas;
 let world;
-let keyboard = new Keyboard();
-let muted = false;
-let introMusic = new Audio('audio/intro.mp3');
+let keyboard = new Keyboard(); 
 
 window.winGame = function() {
-    if (this.gameOver) return;  
+    if (this.gameOver) return;
     this.gameOver = true;
-    console.log('winGame called');
     clearInterval(this.runInterval);
     displayEndBackground();
     document.getElementById('youWin').style.display = 'flex';
+    document.querySelector('.canvas').style.display = 'none';
     hideStatusBars();
-}
- 
+    audioManager.play('win');
+};
+
 window.lostGame = function() {
-    if (this.gameOver) return;  
+    if (this.gameOver) return;
     this.gameOver = true;
-    console.log('lostGame called');
     clearInterval(this.runInterval);
     displayEndBackground();
     document.getElementById('youLost').style.display = 'flex';
+    document.querySelector('.canvas').style.display = 'none';
     hideStatusBars();
-}
-
-
+    audioManager.play('lost');
+};
 
 function displayEndBackground() {
     let ctx = canvas.getContext('2d');
@@ -42,50 +40,34 @@ function hideStatusBars() {
     });
 }
 
-
 function init() {
-    console.log('Initializing game...');
     initLevel();
     canvas = document.getElementById('canvas');
     if (canvas) {
-        console.log('Canvas found:', canvas);
         canvas.width = 720;
         canvas.height = 480;
-        console.log('Canvas size set:', canvas.width, canvas.height);
-    } else {
-        console.error('Canvas not found');
     }
     keyboard = new Keyboard();
     world = new World(canvas, keyboard);
-    console.log('Game initialized:', { canvas, keyboard, world });
     keyboard.bindBtsPressEvents();
-    console.log('Touch events bound');
     initEventListeners();
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM fully loaded and parsed');
+document.addEventListener('DOMContentLoaded', () => { 
     drawStartScreen();
+    audioManager.play('intro');
 
-    const startButton = document.querySelector('.start-button');
+    let startButton = document.querySelector('.start-button');
     if (startButton) {
         startButton.addEventListener('click', startGame);
-        console.log('Start button found and event listener added');
-    } else {
-        console.error("Start button not found");
     }
 });
 
-function initEventListeners() {
-    console.log('Initializing event listeners...');
+function initEventListeners() { 
     if (keyboard) {
         keyboard.bindKeyPressEvents();
-        console.log('Event listeners initialized');
-    } else {
-        console.error('Keyboard not initialized');
     }
 }
-
 
 function showOverlay(overlayId) {
     document.getElementById(overlayId).style.display = 'flex';
@@ -97,7 +79,6 @@ function closeOverlay(overlayId) {
     document.body.classList.remove('overlay-active');
 }
 
- 
 function drawStartScreen() {
     let canvas = document.getElementById('startCanvas');
     let ctx = canvas.getContext('2d');
@@ -110,21 +91,18 @@ function drawStartScreen() {
     };
 }
 
-function startGame() { 
-    introMusic.pause();  
-    introMusic.currentTime = 0; 
-    document.getElementById('container').style.display = 'none'; 
-    document.getElementById('canvas').style.display = 'block';
-    document.getElementById('iconContainer').style.display = 'flex';  
-    document.getElementById('DatenschutzImpressum').style.display = 'none';
-    init();
+function startIntroMusic() {
+    audioManager.play('intro');
 }
 
-function startIntroMusic() {
-    introMusic.loop = true; 
-    if (!muted) {
-        this.introMusic.play();
-    }   
+function startGame() { 
+    audioManager.pause('intro');   
+    document.getElementById('container').style.display = 'none'; 
+    document.querySelector('.canvas').style.display = 'block';    
+    document.getElementById('gameIcons').style.display = 'flex';  
+    document.getElementById('overlay-buttons').style.display = 'flex';  
+    document.getElementById('footer').style.display = 'none';
+    init();
 }
 
 function restartGame() {
@@ -171,18 +149,17 @@ function exitFullscreen() {
     }
 }
 
-function muteSound() {
-    muted = !muted;
-    let muteButtonIcon = document.getElementById('muteButtonIcon');
-        if (muteButtonIcon) {
-            muteButtonIcon.src = muted ? 'img/icons/mute.png' : 'img/icons/soundON.png';
-        }
-    
-    // Get all audio elements and update their muted property
-    document.querySelectorAll('audio').forEach(audio => {
-        audio.muted = muted;
-    });
-    introMusic.muted = muted;
+function goBack() {
+    window.location.href = 'index.html';
 }
 
-  
+function checkOrientation() {
+    if (window.innerHeight > window.innerWidth) {
+        document.getElementById('turnDevice').style.display = 'flex';
+    } else {
+        document.getElementById('turnDevice').style.display = 'none';
+    }
+}
+
+window.addEventListener('resize', checkOrientation);
+window.addEventListener('load', checkOrientation);

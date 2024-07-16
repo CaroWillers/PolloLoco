@@ -22,6 +22,7 @@
     <script src="models/level.class.js"></script>
     <script src="models/endboss.class.js"></script>
     <script src="levels/level1.js"></script>
+    <script src="js/audio.js"></script>
     <script src="js/game.js"></script>
     <title>EL POLLO LOCO</title>
 </head>
@@ -32,36 +33,18 @@
         <h2>Join Pepe on a wild desert adventure to defeat the giant chicken and save the day!</h2>
         <button class="story-button" onclick="showOverlay('storyOverlay')">Learn more about the story of Pepe</button>
     </div>
-   
+
+   <!-- Start Canvas-->
     <div id="fullscreen" class="start-screen-container">
         <canvas id="startCanvas" class="start-screen" width="720" height="480"></canvas>
-        <button class="start-button" onclick="startGame()">START GAME!</button>
-        <div id="iconContainer" class="iconContainer">
-            <button onclick="toggleFullscreen()" class="iconButton"><img src="img/icons/maximize.png"></button>
-            <button onclick="muteSound()" class="iconButton"><img id="muteButtonIcon" src="img/icons/mute.png"></button>
-        </div>
-        <div class="overlay-buttons">
-            <div id="hud" class="background-cover">
-                <div class="panel-wrapper">
-                    <button class="mobile-button" id="btnLeft" title="Pepe moves left.">
-                        <img src="img/icons/left-arrow.png" alt="Left">
-                    </button>
-                    <button class="mobile-button" id="btnRight" title="Pepe moves right.">
-                        <img src="img/icons/right-arrow.png" alt="Right">
-                    </button>
-                </div>
-                <div class="panel-wrapper">
-                    <button class="mobile-button" id="btnJump" title="Pepe jumps over obstacles or enemies.">
-                        <img src="img/icons/jump.png" alt="Jump">
-                    </button>
-                    <button class="mobile-button" id="btnThrow" title="Pepe throws bottle.">
-                        <img src="img/icons/throwBottle.png" alt="Throw">
-                    </button>
-                </div>
-            </div>
+        <button class="start-button" onclick="startGame()"><img class="icon-button" src="img/icons/play.png"> START GAME!</button>
+        <div id="iconContainer" class="icon-container">
+            <button onclick="toggleFullscreen()" class="icon-button"><img src="img/icons/maximize.png"></button>
+            <button onclick="muteSound()" class="icon-button"><img id="muteButtonIcon" src="img/icons/mute.png"></button>
         </div>
     </div>
    
+    <!-- Key Legend -->
     <div class="description">
         <h2>Key Legend for Pepe's moves </h2>
         <ul class="legend">
@@ -84,18 +67,20 @@
         </ul> 
         <button class="story-button" onclick="showOverlay('gameRulesOverlay')">Game Rules</button>
     </div>
-</div>     
+</div>  
 
-<div class="overlay" id="storyOverlay">
-    <div class="overlay-content">
+<!-- The Story of Pepe -->
+<div class="overlay" id="storyOverlay" onclick="closeOverlay('storyOverlay')">
+    <div class="overlay-content" onclick="event.stopPropagation()">
         <h2>The Story of Pepe</h2>
         <p>Pepe, the brave Mexican, embarks on an exciting adventure through the hot desert. Along his journey, he encounters dangerous enemies in the form of wild chickens blocking his way.<br><br>However, Pepe can defeat these chickens with throwing bottles he collects from the ground. Besides the chickens, there are also valuable coins to be found in the desert, which Pepe can collect to regain health.<br><br>At the end of his journey, a great final boss - a giant chicken - awaits to be defeated in order to win the game.</p>
         <button class="close-button" onclick="closeOverlay('storyOverlay')">Close</button>
     </div>
 </div>
 
-<div class="overlay" id="gameRulesOverlay">
-    <div class="overlay-content">
+<!-- Game Rules -->
+<div class="overlay" id="gameRulesOverlay" onclick="closeOverlay('gameRulesOverlay')">
+    <div class="overlay-content" onclick="event.stopPropagation()">
         <h2>Game Rules</h2>
         <p>Pepe can move left and right using the arrow keys and jump using the spacebar. Collect bottles and coins scattered throughout the desert.<br><br>
         - <strong>Health Bar:</strong> Shows Pepe's remaining health.<br>
@@ -109,19 +94,48 @@
     </div>
 </div>
 
-<footer>
-    <a id="DatenschutzImpressum" onclick="window.location.href='./privacy-policy.html'">Datenschutzerklärung/Impressum</a> 
-</footer>
+<!-- Footer -->
+<footer id="footer" class="footer">
+    <a class="legal-notes" href="privacy-policy.html">Impressum</a> 
+    <a class="legal-notes" href="legal-notice.html">Datenschutzerklärung</a> 
+</footer> 
 
-<div id="fullscreen"> 
+
+<!-- Game Screen -->
+<div id="fullscreen" class="start-screen-container">  
     <canvas id="canvas" class="canvas" width="720" height="480" style="display: none;"></canvas>
+    <div id="gameIcons" class="icon-container" style="display: none;">
+        <button onclick="toggleFullscreen()" class="icon-button"><img src="img/icons/maximize.png"></button>
+        <button onclick="muteSound()" class="icon-button"><img id="muteButtonIcon" src="img/icons/mute.png"></button>
+    </div>
+    <div id="overlay-buttons" class="overlay-buttons">
+        <div id="hud" class="background-cover">
+            <div class="panel-wrapper">
+                <button class="mobile-button" id="btnLeft" title="Pepe moves left.">
+                    <img src="img/icons/left-arrow.png" alt="Left">
+                </button>
+                <button class="mobile-button" id="btnRight" title="Pepe moves right.">
+                    <img src="img/icons/right-arrow.png" alt="Right">
+                </button>
+            </div>
+            <div class="panel-wrapper">
+                <button class="mobile-button" id="btnJump" title="Pepe jumps over obstacles or enemies.">
+                    <img src="img/icons/jump.png" alt="Jump">
+                </button>
+                <button class="mobile-button" id="btnThrow" title="Pepe throws bottle.">
+                    <img src="img/icons/throwBottle.png" alt="Throw">
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
 
+<!-- End of Game -->
 <div class="game-over" id="youWin" style="display: none;">
     <div class="game-over-overlay"></div>
     <div class="game-over-content">
         <img lass="intro-outro-image" src="img/9_intro_outro_screens/win/win_2.png" width="720" height="480">
-        <button class="start-button" onclick="restartGame()">RESTART GAME</button>
+        <button class="start-button" onclick="restartGame()"><img class="icon-button" src="img/icons/play.png"> PLAY AGAIN</button>
     </div>
 </div>
 
@@ -129,8 +143,14 @@
     <div class="game-over-overlay"></div>
     <div class="game-over-content">
         <img lass="intro-outro-image" src="img/9_intro_outro_screens/game_over/oh no you lost!.png" width="720" height="480">
-        <button class="start-button" onclick="restartGame()">RESTART GAME</button>
+        <button class="start-button" onclick="restartGame()"><img class="icon-button" src="img/icons/play.png"> PLAY AGAIN</button>
     </div>
+</div>
+
+<!-- Landscape warning -->
+<div class="turn-device" id="turnDevice">
+    <div class="turn-text">TURN YOUR DEVICE TO LANDSCAPE FOR THE BEST GAMEPLAY</div>
+    <img class="turn-img" src="img/icons/landscape.png" alt="Landscape mode">
 </div>
 </body>
 </html>

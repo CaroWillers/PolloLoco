@@ -1,13 +1,11 @@
 class Character extends MovableObject {
     speed = 10;
-    y = 120;
-    height = 280;
+    height = 300;
     health = 100;
-    collectedBottles = 0; 
-    hitCooldown = false;  
-    hitSound = new Audio('audio/hit.mp3'); 
-    deadSound = new Audio('audio/dead.mp3');
-    killedEnemySound = new Audio('audio/killedEnemy.mp3');
+    y = 180;
+    collectedBottles = 0;
+    hitCooldown = false;
+    isMoving = false;
 
     offset = {
         top: 150,
@@ -25,7 +23,7 @@ class Character extends MovableObject {
         'img/2_character_pepe/1_idle/idle/I-6.png',
         'img/2_character_pepe/1_idle/idle/I-7.png',
         'img/2_character_pepe/1_idle/idle/I-8.png',
-        'img/2_character_pepe/1_idle/idle/I-9.png'          
+        'img/2_character_pepe/1_idle/idle/I-9.png'
     ];
 
     IMAGES_WALKING = [
@@ -65,9 +63,6 @@ class Character extends MovableObject {
         'img/2_character_pepe/5_dead/D-57.png'
     ];
 
-    world;
-    walking_sound = new Audio('audio/walking.mp3');
-
     constructor() {
         super().loadImage('img/2_character_pepe/2_walk/W-21.png');
         this.loadImages(this.IMAGES_IDLE);
@@ -77,7 +72,6 @@ class Character extends MovableObject {
         this.loadImages(this.IMAGES_DEAD);
         this.applyGravity();
         this.x = 100;
-        this.y = 180;  
         this.animate();
     }
 
@@ -88,17 +82,23 @@ class Character extends MovableObject {
 
     handleMovement() {
         setInterval(() => {
-            this.walking_sound.pause();
+            audioManager.pause('walking'); // Pause walking sound by default
+            this.isMoving = false;
+
             if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
                 this.moveRight();
                 this.otherDirection = false;
-                this.walking_sound.play();
+                audioManager.play('walking');
+                this.world.updateBackground();
+                this.isMoving = true;
             }
 
             if (this.world.keyboard.LEFT && this.x > 0) {
                 this.moveLeft();
                 this.otherDirection = true;
-                this.walking_sound.play();
+                audioManager.play('walking');
+                this.world.updateBackground();
+                this.isMoving = true;
             }
 
             if (this.world.keyboard.SPACE && !this.isAboveGround()) {
@@ -129,20 +129,20 @@ class Character extends MovableObject {
         this.playAnimation(this.IMAGES_IDLE);
     }
 
-
     jump() {
         this.speedY = 25;
+        this.isMoving = true;
     }
 
     isAboveGround() {
-        return this.y < 180; 
+        return this.y < 180;
     }
 
     hit() {
         if (!this.hitCooldown) {
             this.health -= 5;
             this.world.statusBarHealth.setPercentage(this.health);
-            this.playhitSound();
+            audioManager.play('hit');
 
             if (this.health <= 0) {
                 this.health = 0;
@@ -160,7 +160,7 @@ class Character extends MovableObject {
     die() {
         if (this.isDead()) return;
         this.playAnimation(this.IMAGES_DEAD);
-        this.playdeadSound();
+        audioManager.play('dead');
         setTimeout(() => {
             this.remove();
         }, 500);
@@ -173,7 +173,6 @@ class Character extends MovableObject {
         }
     }
 
-
     isHurt() {
         let timepassed = new Date().getTime() - this.lastHit;
         timepassed = timepassed / 1000;
@@ -181,40 +180,10 @@ class Character extends MovableObject {
     }
 
     isDead() {
-        return this.health == 0;  
+        return this.health == 0;
     }
 
     remove() {
         this.world.character = null;
-    }
-
-    playhitSound() {
-        if (!muted) {
-            this.hitSound.play();
-            setTimeout(() => {
-                this.hitSound.pause();
-                this.hitSound.currentTime = 0;
-            }, 2000);  
-        }
-    }
-    
-    playdeadSound() {
-        if (!muted) {
-            this.deadSound.play();
-            setTimeout(() => {
-                this.deadSound.pause();
-                this.deadSound.currentTime = 0;
-            }, 1500); 
-        }
-    }
-    
-    playKilledEnemySound() {
-        if (!muted) {
-            this.killedEnemySound.play();
-            setTimeout(() => {
-                this.killedEnemySound.pause();
-                this.killedEnemySound.currentTime = 0;
-            }, 2000);  
-        }
     }
 }

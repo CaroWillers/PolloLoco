@@ -61,6 +61,22 @@ class World {
             obj1.height + obj1.y > obj2.y);
     }
 
+    updateBackground() {
+        this.level.backgroundObjects.forEach((bgObject, index) => {
+            let layerSpeed = this.getLayerSpeed(index);
+            bgObject.x -= layerSpeed * this.character.speed / 10;
+        });
+    }
+
+
+    getLayerSpeed(index) {
+        if (index % 4 === 0) return 0.2; // air
+        if (index % 4 === 1) return 0.4; // third layer
+        if (index % 4 === 2) return 0.6; // second layer
+        if (index % 4 === 3) return 1;   // first layer
+    }
+
+
     run() {
         this.runInterval = setInterval(() => {
             if (!this.gameOver) {
@@ -109,7 +125,7 @@ class World {
                 let percentage = (this.coinCounter / 5) * 100;
                 this.statusBarCoin.setPercentage(percentage);
                 this.level.coins.splice(index, 1);
-                coin.playCoinSound();
+                audioManager.play('coin', 2000);
             }
         });
     }
@@ -124,7 +140,7 @@ class World {
                 this.statusBarBottle.setPercentage(percentage);
                 this.character.collectedBottles++;
                 console.log('Collected Bottles: ', this.character.collectedBottles);
-                bottle.playBottleSound();
+                audioManager.play('bottle', 2000);
                 this.level.bottle.splice(index, 1);
             }
         });
@@ -144,7 +160,7 @@ class World {
             if (this.character.isColliding(enemy)) {
                 if (this.character.isFalling() && this.character.y + this.character.height < enemy.y + enemy.height / 2) {
                     enemy.die();
-                    this.character.playKilledEnemySound();
+                    audioManager.play('killedEnemy', 2000);
                 } else {
                     this.character.hit();
                     this.statusBarHealth.setPercentage(this.character.health);
@@ -173,7 +189,7 @@ class World {
 
             if (this.level.endboss.health > 0) {
                 this.level.endboss.playAnimation(this.level.endboss.IMAGES_HURT);
-                this.level.endboss.playEndbossHurtSound();
+                audioManager.play('endbossHurt', 2000);
             }
 
             if (this.level.endboss.health <= 0) {

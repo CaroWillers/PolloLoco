@@ -7,4 +7,7 @@ class BackgroundObject extends MovableObject {
         this.x = x;
         this.y = 480 - this.height;
     }
+    draw(ctx) {
+        ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+    }
 }

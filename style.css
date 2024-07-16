@@ -29,10 +29,19 @@ h2 {
     text-align: center;
 }
 
+
+.canvas-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100%;
+}
+
 canvas {  
     display: block;
     width: 720px;
-    height: 480px;  
+    height: 480px;   
     margin-bottom: 20px; 
     position: relative; 
 } 
@@ -305,7 +314,7 @@ body.overlay-active .start-button {
     margin-right: 20px;
 }
 
-.iconButton {
+.icon-button {
     cursor: pointer;
     width: 40px;
     height: 40px;
@@ -320,23 +329,24 @@ body.overlay-active .start-button {
     margin: 0 5px; 
 }
     
-.iconButton img {
+.icon-button img {
     width: 40px;
     height: 40px; 
     object-fit: cover;
     
 }
 
-.iconButton:hover {
+.icon-button:hover {
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);  
     transform: scale(1.2);  
     transition: box-shadow 0.5s ease-in-out, transform 0.5s ease-in-out;  
 }
 
 .overlay-buttons {
+    display: none;
     position: absolute;
-    bottom: 0; 
-    width: 100%;      
+    bottom: -10px; 
+    width: 90%;      
 }
 
 .panel-wrapper {
@@ -344,10 +354,11 @@ body.overlay-active .start-button {
     display: flex;
     justify-content: center;
     flex-direction: row;
-    gap: 20px;
+    gap: 50px;
 }
 
 .background-cover {
+    width: 100%;
     display: flex; 
     flex-direction: row;
     padding: 20px;
@@ -363,8 +374,8 @@ body.overlay-active .start-button {
 
 .mobile-button {
     cursor: pointer;
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
     border: none;
     border-radius: 50%;
     overflow: hidden;
@@ -373,8 +384,8 @@ body.overlay-active .start-button {
 }
 
 .mobile-button img {
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
     object-fit: cover;
 }
 
@@ -389,6 +400,7 @@ body.overlay-active .start-button {
 .game-over {
     width: 720px;
     height: 480px;  
+    margin-top: 200px; 
     margin-bottom: 20px; 
     position: relative; 
     position: fixed;
@@ -422,7 +434,125 @@ body.overlay-active .start-button {
     display: none;
 }
 
+/* Leagl Notice and Privacy Policy*/
+.footer { 
+    margin-bottom: 30px;  
+    display: flex;
+    gap: 50px;
 
+}
+
+.legal-notes {
+    cursor: pointer;
+    color: #4d4949; 
+    font-size: 20px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.legal-notes:hover {
+    color: #4d4949; 
+    text-decoration: underline;
+    transform: scale(1.1);  
+
+}
+
+.body-legal_notes {
+    margin: 0;
+    padding: 0; 
+    font-family: merienda, Arial, Helvetica, sans-serif;
+    display: flex;
+    align-items: center;
+    flex-direction: column;  
+    background-image: url('img/desertBackground.jpg');
+    background-size: cover;
+    backdrop-filter: blur(5px);
+    background-position: center;   
+    background-repeat: no-repeat;   
+    height: 100vh;
+    width: 100%; 
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.main-container-Legal {
+    max-width: 1250px;
+    height: 100%;
+    overflow: auto;
+    margin: auto;
+    padding: 20px;
+    color: #4d4949; 
+}
+
+.topHeadline {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 30px;
+    margin-bottom: 50px;
+}
+
+.pp-h1 {
+    font-size: 48px;
+    font-weight: 700;
+    text-align: left;
+    letter-spacing: 2px;
+}
+
+.pp-h2 {
+    margin-top: 20px;
+    font-size: 34px;
+    font-weight: 700;
+    text-align: left;
+    letter-spacing: 1px;
+    color: #4d4949; }
+
+.pp-h3 {
+    margin-top: 10px;
+    font-size: 20px;
+    font-weight: 700;
+    text-align: left;
+    letter-spacing: 1px;
+    color: #4d4949; 
+}
+
+.highlight {
+    color: #4d4949; 
+    font-weight: 900;
+}
+
+/* Landscape warning styles */
+.turn-device {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    text-align: center;
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.turn-text {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.turn-img {
+    width: 100px;
+    height: auto;
+}
+
+/* Show warning when in portrait mode */
+@media screen and (orientation: portrait) {
+    .turn-device {
+        display: flex;
+    }
+}
 /* Smartphones (portrait and landscape) ----------- */
 @media only screen and (min-device-width: 320px) and (max-device-width: 480px) {
     body {

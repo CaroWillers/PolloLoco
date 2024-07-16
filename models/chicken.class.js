@@ -1,7 +1,7 @@
 class Chicken extends MovableObject { 
     height = 80;
     width = 80;
-    y = 380;    
+    y = 340;    
     level_end_x = 3500;
 
     IMAGES_WALKING = [
@@ -14,8 +14,6 @@ class Chicken extends MovableObject {
         'img/3_enemies_chicken/chicken_normal/2_dead/dead.png'
     ];
 
-    walking_sound = new Audio('audio/walkGrass.mp3');
-
     constructor(world) {
         super().loadImage('img/3_enemies_chicken/chicken_normal/1_walk/1_w.png');
         this.world = world;
@@ -27,28 +25,29 @@ class Chicken extends MovableObject {
         this.animate();
     }
 
-animate() {
-    this.movingInterval = setInterval(() => {
-        this.moveLeft();
-    }, 1000 / 60);
+    animate() {
+        this.movingInterval = setInterval(() => {
+            this.moveLeft();
+        }, 1000 / 60);
 
-    this.animationInterval = setInterval(() => {
-        this.playAnimation(this.IMAGES_WALKING);        
-    }, 200);
-}
+        this.animationInterval = setInterval(() => {
+            this.playAnimation(this.IMAGES_WALKING);        
+        }, 200);
+    }
 
-die() {
-    this.loadImage(this.IMAGES_DEAD[0]);
-    this.speed = 0;
-    clearInterval(this.movingInterval);
-    clearInterval(this.animationInterval);
-    setTimeout(() => {
-        this.remove();
-    }, 1000);
-}
+    die() {
+        this.loadImage(this.IMAGES_DEAD[0]);
+        this.speed = 0;
+        clearInterval(this.movingInterval);
+        clearInterval(this.animationInterval);
+        audioManager.play('dead'); // Play the death sound using audioManager
+        setTimeout(() => {
+            this.remove();
+        }, 1000);
+    }
 
-remove() {
-    let index = this.world.level.enemies.indexOf(this);
+    remove() {
+        let index = this.world.level.enemies.indexOf(this);
         if (index > -1) {
             this.world.level.enemies.splice(index, 1);
         }

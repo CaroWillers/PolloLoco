@@ -16,7 +16,7 @@ class DrawableObject {
     draw(ctx) {
         if (this.img && !this.isRemoved) {
             ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
-            this.drawFrame(ctx);
+            this.drawFrame(ctx); 
         }
     }
 
