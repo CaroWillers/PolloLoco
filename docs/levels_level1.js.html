@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: levels/level1.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: levels/level1.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>let level1;
+let level_end_x = 3500;
+
+/**
+ * Initializes the level by creating the Level object with enemies, clouds, background objects, coins, and bottles.
+ */
+function initLevel() {
+    level1 = new Level(
+        [
+            new Chicken(),
+            new Chicken(),
+            new Chicken(),
+            new Chicken(),
+            new ChickenSmall(),
+            new ChickenSmall(),
+            new ChickenSmall(),
+            new Endboss()
+        ],
+        generateClouds(),
+        generateInitialBackgroundObjects(), 
+        [
+            new Coins(),
+            new Coins(),
+            new Coins(),
+            new Coins(),
+            new Coins()
+        ],
+        [
+            new Bottle(),
+            new Bottle(),
+            new Bottle(),
+            new Bottle(),
+            new Bottle()
+        ]
+    ); 
+}
+
+/**
+ * Generates an array of Cloud objects to fill the level.
+ * @returns {Cloud[]} An array of Cloud objects.
+ */
+function generateClouds() {
+    let clouds = [];
+    let segmentWidth = 719;
+    let cloudCount = Math.ceil(level_end_x / segmentWidth);
+
+    for (let i = 0; i &lt; cloudCount; i++) {
+        const cloud = new Cloud();
+        cloud.x = i * segmentWidth;  
+        clouds.push(cloud);
+    }
+
+    return clouds;
+}
+
+/**
+ * Generates the initial background objects for the level.
+ * @returns {BackgroundObject[]} An array of BackgroundObject objects.
+ */
+function generateInitialBackgroundObjects() {
+    let segmentWidth = 719;
+    let initialRepeats = 5; // Initial number of times to repeat the background
+    let backgroundObjects = [];
+
+    for (let i = 0; i &lt; initialRepeats; i++) {
+        addBackgroundSegment(backgroundObjects, i * segmentWidth * 2); // *2 to account for two sets of layers
+    }
+
+    return backgroundObjects;
+}
+
+/**
+ * Adds a segment of background layers to the background objects array.
+ * @param {BackgroundObject[]} backgroundObjects - The array of background objects to add to.
+ * @param {number} offsetX - The x-offset for the background segment.
+ */
+function addBackgroundSegment(backgroundObjects, offsetX) {
+    const layers1 = [
+        'img/5_background/layers/air.png',
+        'img/5_background/layers/3_third_layer/1.png',
+        'img/5_background/layers/2_second_layer/1.png',
+        'img/5_background/layers/1_first_layer/1.png'
+    ];
+
+    const layers2 = [
+        'img/5_background/layers/air.png',
+        'img/5_background/layers/3_third_layer/2.png',
+        'img/5_background/layers/2_second_layer/2.png',
+        'img/5_background/layers/1_first_layer/2.png'
+    ];
+
+    layers1.forEach(layer => {
+        backgroundObjects.push(new BackgroundObject(layer, offsetX));
+    });
+
+    offsetX += 719; // Move to the next segment for the second set of layers
+
+    layers2.forEach(layer => {
+        backgroundObjects.push(new BackgroundObject(layer, offsetX));
+    });
+}
+ 
+initLevel();
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AudioManager.html">AudioManager</a></li><li><a href="BackgroundObject.html">BackgroundObject</a></li><li><a href="Bottle.html">Bottle</a></li><li><a href="Character.html">Character</a></li><li><a href="Chicken.html">Chicken</a></li><li><a href="ChickenSmall.html">ChickenSmall</a></li><li><a href="Cloud.html">Cloud</a></li><li><a href="Coins.html">Coins</a></li><li><a href="CollisionManager.html">CollisionManager</a></li><li><a href="DrawableObject.html">DrawableObject</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Level.html">Level</a></li><li><a href="MovableObject.html">MovableObject</a></li><li><a href="StatusBar.html">StatusBar</a></li><li><a href="ThrowableObject.html">ThrowableObject</a></li><li><a href="World.html">World</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addBackgroundSegment">addBackgroundSegment</a></li><li><a href="global.html#generateClouds">generateClouds</a></li><li><a href="global.html#generateInitialBackgroundObjects">generateInitialBackgroundObjects</a></li><li><a href="global.html#initLevel">initLevel</a></li><li><a href="global.html#muteSound">muteSound</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.3</a> on Thu Jul 18 2024 10:19:08 GMT+0200 (Mitteleuropäische Sommerzeit)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

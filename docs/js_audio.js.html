@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: js/audio.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: js/audio.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Class representing an audio manager for handling game sounds.
+ */
+class AudioManager {
+    constructor() {
+        /**
+         * An object containing the audio files for the game sounds.
+         * @type {Object&lt;string, HTMLAudioElement>}
+         */
+        this.sounds = {
+            bottle: new Audio('audio/bottle.mp3'),
+            brokenBottle: new Audio('audio/glass.mp3'),
+            coin: new Audio('audio/coin.mp3'),
+            dead: new Audio('audio/dead.mp3'),
+            endboss: new Audio('audio/endboss.mp3'),
+            endbossHurt: new Audio('audio/hurt.mp3'),
+            hit: new Audio('audio/hit.mp3'),
+            hurt: new Audio('audio/hurt.mp3'),
+            intro: new Audio('audio/intro.mp3'),
+            killedEnemy: new Audio('audio/killedEnemy.mp3'),
+            lost: new Audio('audio/lost.mp3'),
+            throw: new Audio('audio/throw.mp3'),
+            walking: new Audio('audio/walkGrass.mp3'),
+            win: new Audio('audio/win.mp3')
+        };
+        this.muted = false;
+        this.currentSound = null;
+        this.timeout = null;
+    }
+
+    /**
+     * Plays the specified sound.
+     * @param {string} soundName - The name of the sound to play.
+     * @param {number} [duration=null] - The duration to play the sound for in milliseconds. If not specified, the sound plays until it ends.
+     */
+    play(soundName, duration = null) {
+        if (this.muted || !this.sounds[soundName]) return;
+
+        // Pause the current sound if it's playing
+        if (this.currentSound &amp;&amp; this.currentSound !== this.sounds[soundName]) {
+            this.pauseCurrentSound();
+        }
+
+        this.currentSound = this.sounds[soundName];
+        this.currentSound.play();
+
+        if (duration) {
+            this.timeout = setTimeout(() => {
+                this.pauseCurrentSound();
+            }, duration);
+        }
+    }
+
+    /**
+     * Pauses the current sound if it is playing.
+     */
+    pauseCurrentSound() {
+        if (this.currentSound) {
+            this.currentSound.pause();
+            this.currentSound.currentTime = 0;
+            this.currentSound = null;
+        }
+
+        if (this.timeout) {
+            clearTimeout(this.timeout);
+            this.timeout = null;
+        }
+    }
+
+    /**
+     * Pauses the specified sound.
+     * @param {string} soundName - The name of the sound to pause.
+     */
+    pause(soundName) {
+        if (this.sounds[soundName]) {
+            this.sounds[soundName].pause();
+            this.sounds[soundName].currentTime = 0;
+        }
+    }
+
+    /**
+     * Toggles the mute state for all sounds.
+     */
+    toggleMute() {
+        this.muted = !this.muted;
+        for (let sound in this.sounds) {
+            this.sounds[sound].muted = this.muted;
+        }
+        this.updateMuteButtonIcons();
+    }
+
+    /**
+     * Updates the icons for the mute buttons based on the mute state.
+     */
+    updateMuteButtonIcons() {
+        let startMuteButtonIcon = document.getElementById('startMuteButtonIcon');
+        let gameMuteButtonIcon = document.getElementById('gameMuteButtonIcon');
+        
+        if (startMuteButtonIcon) {
+            startMuteButtonIcon.src = this.muted ? 'img/icons/mute.png' : 'img/icons/soundON.png';
+        }
+        if (gameMuteButtonIcon) {
+            gameMuteButtonIcon.src = this.muted ? 'img/icons/mute.png' : 'img/icons/soundON.png';
+        }
+    }
+
+    /**
+     * Sets the specified sound to loop.
+     * @param {string} soundName - The name of the sound to loop.
+     */
+    loop(soundName) {
+        if (this.sounds[soundName]) {
+            this.sounds[soundName].loop = true;
+        }
+    }
+}
+
+window.audioManager = new AudioManager();
+
+/**
+ * Toggles the mute state for the audio manager.
+ */
+function muteSound() {
+    audioManager.toggleMute();
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AudioManager.html">AudioManager</a></li><li><a href="BackgroundObject.html">BackgroundObject</a></li><li><a href="Bottle.html">Bottle</a></li><li><a href="Character.html">Character</a></li><li><a href="Chicken.html">Chicken</a></li><li><a href="ChickenSmall.html">ChickenSmall</a></li><li><a href="Cloud.html">Cloud</a></li><li><a href="Coins.html">Coins</a></li><li><a href="CollisionManager.html">CollisionManager</a></li><li><a href="DrawableObject.html">DrawableObject</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Level.html">Level</a></li><li><a href="MovableObject.html">MovableObject</a></li><li><a href="StatusBar.html">StatusBar</a></li><li><a href="ThrowableObject.html">ThrowableObject</a></li><li><a href="World.html">World</a></li></ul><h3>Global</h3><ul><li><a href="global.html#muteSound">muteSound</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.3</a> on Thu Jul 18 2024 10:21:18 GMT+0200 (Mitteleuropäische Sommerzeit)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

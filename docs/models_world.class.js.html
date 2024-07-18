@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: models/world.class.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: models/world.class.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Class representing the game world.
+ */
+class World {
+    character = new Character();
+    level = level1;
+    canvas;
+    ctx;
+    keyboard;
+    camera_x = 0;
+    statusBarHealth = new StatusBar('health');
+    statusBarCoin = new StatusBar('coin');
+    statusBarBottle = new StatusBar('bottle');
+    coinCounter = 0;
+    bottleCounter = 0;
+    throwableObjects = [];
+    lastThrowTime = 0;
+    gameOver = false;
+    winGame = false;
+    lostGame = false;
+    collisionManager;
+
+    /**
+     * Creates a new game world.
+     * @param {HTMLCanvasElement} canvas - The canvas element.
+     * @param {Keyboard} keyboard - The keyboard input handler.
+     */
+    constructor(canvas, keyboard) {
+        this.canvas = canvas;
+        this.keyboard = keyboard;
+        this.ctx = canvas.getContext('2d');
+        this.character.world = this;
+        this.collisionManager = new CollisionManager(this);
+        this.draw();
+        this.setWorld();
+        this.run();
+    }
+
+    /**
+     * Sets the world reference for all objects in the level.
+     */
+    setWorld() {
+        this.character.world = this;
+        this.level.enemies.forEach(enemy => {
+            enemy.world = this;
+        });
+        this.level.clouds.forEach(cloud => {
+            cloud.world = this;
+        });
+    }
+
+    /**
+     * Positions objects randomly within the level.
+     */
+    positionObjects() {
+        let objects = [...this.level.enemies, ...this.level.coins, ...this.level.bottle];
+        let minX = 350; // Minimum x position for objects to avoid the start area
+        let maxX = this.level.level_end_x - 500; // Maximum x position for objects
+        let minDistance = 50; // Mindestabstand zwischen den Objekten
+
+        objects.forEach((obj, index) => {
+            let collision;
+            do {
+                obj.x = minX + Math.random() * (maxX - minX);
+                obj.y = (obj instanceof Coins) ? 250 - Math.random() * 150 : 380; // For ground objects, coins are higher
+                collision = objects.some((other, otherIndex) => {
+                    if (index !== otherIndex) {
+                        return this.isColliding(obj, other, minDistance);
+                    }
+                    return false;
+                });
+            } while (collision);
+        });
+    }
+
+
+    /**
+     * Checks if two objects are colliding.
+     * @param {Object} obj1 - The first object.
+     * @param {Object} obj2 - The second object.
+     * @returns {boolean} - True if the objects are colliding, false otherwise.
+     */
+    isColliding(obj1, obj2) {
+        return (
+            obj1.x &lt; obj2.x + obj2.width &amp;&amp;
+            obj1.x + obj1.width > obj2.x &amp;&amp;
+            obj1.y &lt; obj2.y + obj2.height &amp;&amp;
+            obj1.height + obj1.y > obj2.y
+        );
+    }
+
+    /**
+     * Updates the background layers based on the character's speed.
+     */
+    updateBackground() {
+        this.level.backgroundObjects.forEach((bgObject, index) => {
+            let layerSpeed = this.getLayerSpeed(index);
+            bgObject.x -= layerSpeed * this.character.speed / 10;
+        });
+    }
+
+    /**
+     * Gets the speed of a specific background layer.
+     * @param {number} index - The index of the background layer.
+     * @returns {number} - The speed of the background layer.
+     */
+    getLayerSpeed(index) {
+        if (index % 4 === 0) return 0.2; // air
+        if (index % 4 === 1) return 0.4; // third layer
+        if (index % 4 === 2) return 0.6; // second layer
+        if (index % 4 === 3) return 1;   // first layer
+    }
+
+    /**
+     * Runs the game loop, checking for collisions and moving clouds.
+     */
+    run() {
+        this.runInterval = setInterval(() => {
+            if (!this.gameOver) {
+                this.collisionManager.checkCollisions();
+                this.checkThrowObjects();
+                this.level.clouds.forEach(cloud => cloud.moveLeft());
+            } else {
+                clearInterval(this.runInterval);
+            }
+        }, 1000 / 60);
+    }
+
+    /**
+     * Draws the game world.
+     */
+    draw() {
+        if (this.gameOver) {
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            return;
+        }
+
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.translate(this.camera_x, 0);
+
+        this.addObjectsToMap(this.level.backgroundObjects);
+        this.addObjectsToMap(this.level.clouds);
+
+        this.ctx.translate(-this.camera_x, 0);
+        this.addToMap(this.statusBarHealth);
+        this.addToMap(this.statusBarCoin);
+        this.addToMap(this.statusBarBottle);
+        this.ctx.translate(this.camera_x, 0);
+
+        this.addToMap(this.character);
+        this.addObjectsToMap(this.level.coins);
+        this.addObjectsToMap(this.level.bottle);
+        this.addObjectsToMap(this.level.enemies);
+        this.addObjectsToMap(this.throwableObjects);
+
+        this.ctx.translate(-this.camera_x, 0);
+
+        let self = this;
+        requestAnimationFrame(function() {
+            self.draw();
+        });
+    }
+
+    /**
+     * Adds an array of objects to the map.
+     * @param {Object[]} objects - The objects to add to the map.
+     */
+    addObjectsToMap(objects) {
+        objects.forEach(o => {
+            if (!o.isRemoved) {
+                this.addToMap(o);
+            }
+        });
+    }
+
+    /**
+     * Adds a single object to the map.
+     * @param {Object} mo - The object to add to the map.
+     */
+    addToMap(mo) {
+        if (mo.otherDirection) {
+            this.flipImage(mo);
+        }
+        mo.draw(this.ctx);
+        mo.drawFrame(this.ctx);
+
+        if (mo.otherDirection) {
+            this.flipImageBack(mo);
+        }
+    }
+
+    /**
+     * Flips an image horizontally.
+     * @param {Object} mo - The object to flip.
+     */
+    flipImage(mo) {
+        this.ctx.save();
+        this.ctx.translate(mo.width, 0);
+        this.ctx.scale(-1, 1);
+        mo.x = mo.x * -1;
+    }
+
+    /**
+     * Flips an image back to its original orientation.
+     * @param {Object} mo - The object to flip back.
+     */
+    flipImageBack(mo) {
+        mo.x = mo.x * -1;
+        this.ctx.restore();
+    }
+
+    /**
+     * Hides all status bars.
+     */
+    hideStatusBars() {
+        document.querySelectorAll('.status-bar').forEach(bar => {
+            bar.style.display = 'none';
+        });
+    }
+
+    /**
+     * Checks if a bottle can be thrown.
+     */
+    checkThrowObjects() {
+        if (this.gameOver) return;
+        const currentTime = Date.now();
+        if (this.keyboard.D &amp;&amp; this.character.collectedBottles > 0 &amp;&amp; currentTime - this.lastThrowTime > 500) {
+            this.throwBottle();
+            this.lastThrowTime = currentTime;
+        }
+    }
+
+    /**
+     * Throws a bottle.
+     */
+    throwBottle() {
+        if (this.gameOver) return;
+        let bottle = new ThrowableObject(this.character.x + 100, this.character.y + 100, this);
+        this.throwableObjects.push(bottle);
+        bottle.throw();
+        audioManager.play('throw', 2000);
+        this.character.collectedBottles--;
+        this.statusBarBottle.setPercentage((this.character.collectedBottles / 5) * 100);
+    }
+
+    /**
+     * Handles the event when a bottle hits the endboss.
+     * @param {ThrowableObject} bottle - The bottle that hit the endboss.
+     */
+    handleBottleHitEndboss(bottle) {
+        if (this.gameOver) return;
+        if (this.level.endboss) {
+            this.level.endboss.hit();
+            bottle.removeBottle();
+
+            if (this.level.endboss.health > 0) {
+                this.level.endboss.playAnimation(this.level.endboss.IMAGES_HURT);
+                audioManager.play('endbossHurt', 2000);
+            }
+
+            if (this.level.endboss.health &lt;= 0) {
+                this.level.endboss.die();
+                if (!this.winGame) {
+                    this.winGame = true;
+                    this.gameOver = true;
+                    window.winGame();
+                }
+            }
+        }
+    }
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AudioManager.html">AudioManager</a></li><li><a href="BackgroundObject.html">BackgroundObject</a></li><li><a href="Bottle.html">Bottle</a></li><li><a href="Character.html">Character</a></li><li><a href="Chicken.html">Chicken</a></li><li><a href="ChickenSmall.html">ChickenSmall</a></li><li><a href="Cloud.html">Cloud</a></li><li><a href="Coins.html">Coins</a></li><li><a href="CollisionManager.html">CollisionManager</a></li><li><a href="DrawableObject.html">DrawableObject</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Level.html">Level</a></li><li><a href="MovableObject.html">MovableObject</a></li><li><a href="StatusBar.html">StatusBar</a></li><li><a href="ThrowableObject.html">ThrowableObject</a></li><li><a href="World.html">World</a></li></ul><h3>Global</h3><ul><li><a href="global.html#muteSound">muteSound</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.3</a> on Thu Jul 18 2024 10:21:18 GMT+0200 (Mitteleuropäische Sommerzeit)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

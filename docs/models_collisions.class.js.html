@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: models/collisions.class.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: models/collisions.class.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Manages collisions in the game world.
+ */
+class CollisionManager {
+    /**
+     * Creates an instance of CollisionManager.
+     * @param {World} world - The game world object.
+     */
+    constructor(world) {
+        this.world = world;
+    }
+
+    /**
+     * Checks all types of collisions in the game world.
+     */
+    checkCollisions() {
+        if (this.world.gameOver) return;
+        this.collectCoins();
+        this.collectBottles();
+        this.checkBottleCollisions();
+        this.checkJumpCollisions();
+        this.checkWalkCollisions();
+        this.checkEndbossCollisions();
+    }
+
+    /**
+     * Checks for collisions between the character and coins.
+     * If a collision is detected, the coin is collected.
+     */
+    collectCoins() {
+        if (this.world.gameOver) return;
+        this.world.level.coins.forEach((coin, index) => {
+            if (this.world.character.isColliding(coin)) {
+                this.world.coinCounter++;
+                let percentage = (this.world.coinCounter / 5) * 100;
+                this.world.statusBarCoin.setPercentage(percentage);
+                this.world.level.coins.splice(index, 1);
+                audioManager.play('coin', 2000);
+            }
+        });
+    }
+
+    /**
+     * Checks for collisions between the character and bottles.
+     * If a collision is detected, the bottle is collected.
+     */
+    collectBottles() {
+        if (this.world.gameOver) return;
+        this.world.level.bottle.forEach((bottle, index) => {
+            if (this.world.character.isColliding(bottle)) {
+                this.world.bottleCounter++;
+                let percentage = (this.world.bottleCounter / 5) * 100;
+                this.world.statusBarBottle.setPercentage(percentage);
+                this.world.character.collectedBottles++;
+                audioManager.play('bottle', 2000);
+                this.world.level.bottle.splice(index, 1);
+            }
+        });
+    }
+
+    /**
+     * Checks for collisions between throwable objects (bottles) and enemies or the ground.
+     */
+    checkBottleCollisions() {
+        if (this.world.gameOver) return;
+        this.world.throwableObjects.forEach((bottle) => {
+            bottle.checkCollision(this.world.level.enemies);
+            bottle.checkGroundCollision();
+        });
+    }
+
+    /**
+     * Checks for jump collisions between the character and enemies.
+     * If a collision is detected, the enemy is defeated.
+     */
+    checkJumpCollisions() {
+        if (this.world.gameOver) return;
+        this.world.level.enemies.forEach((enemy) => {
+            if (this.world.character.isAboveGround() &amp;&amp; this.world.character.isColliding(enemy) &amp;&amp; this.world.character.y + this.world.character.height &lt; enemy.y + enemy.height / 2) {
+                enemy.die();
+                audioManager.play('killedEnemy', 2000);
+                this.world.character.playAnimation(this.world.character.IMAGES_IDLE);
+            }
+        });
+    }
+
+    /**
+     * Checks for walk collisions between the character and enemies.
+     * If a collision is detected, the character takes damage.
+     */
+    checkWalkCollisions() {
+        if (this.world.gameOver || this.world.character.jumpCooldown) return;
+        this.world.level.enemies.forEach((enemy) => {
+            if (this.world.character.isColliding(enemy)) {
+                this.world.character.hit();
+                this.world.statusBarHealth.setPercentage(this.world.character.health);
+                if (this.world.character.isDead()) {
+                    this.world.character.die();
+                    if (!this.world.lostGame) {
+                        this.world.lostGame = true;
+                        this.world.gameOver = true;
+                        window.lostGame();
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * Checks for collisions between the character and the endboss.
+     * If a collision is detected, the character takes damage.
+     */
+    checkEndbossCollisions() {
+        if (this.world.gameOver) return;
+        if (this.world.level.endboss &amp;&amp; this.world.character.isColliding(this.world.level.endboss)) {
+            if (!this.world.character.isJumping) {
+                this.world.character.hit();
+                this.world.statusBarHealth.setPercentage(this.world.character.health);
+                if (this.world.character.isDead()) {
+                    this.world.character.die();
+                    if (!this.world.lostGame) {
+                        this.world.lostGame = true;
+                        this.world.gameOver = true;
+                        window.lostGame();
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Handles the collision between a thrown bottle and the endboss.
+     * @param {ThrowableObject} bottle - The bottle that collided with the endboss.
+     */
+    handleBottleHitEndboss(bottle) {
+        if (this.gameOver) return;
+        if (this.level.endboss) {
+            this.level.endboss.hit();
+            bottle.removeBottle();
+
+            if (this.level.endboss.health > 0) {
+                this.level.endboss.playAnimation(this.level.endboss.IMAGES_HURT);
+                audioManager.play('endbossHurt', 2000);
+            }
+
+            if (this.level.endboss.health &lt;= 0) {
+                this.level.endboss.die();
+                if (!this.winGame) {
+                    this.winGame = true;
+                    this.gameOver = true;
+                    window.winGame();
+                }
+            }
+        }
+    }
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AudioManager.html">AudioManager</a></li><li><a href="BackgroundObject.html">BackgroundObject</a></li><li><a href="Bottle.html">Bottle</a></li><li><a href="Character.html">Character</a></li><li><a href="Chicken.html">Chicken</a></li><li><a href="ChickenSmall.html">ChickenSmall</a></li><li><a href="Cloud.html">Cloud</a></li><li><a href="Coins.html">Coins</a></li><li><a href="CollisionManager.html">CollisionManager</a></li><li><a href="DrawableObject.html">DrawableObject</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Level.html">Level</a></li><li><a href="MovableObject.html">MovableObject</a></li><li><a href="StatusBar.html">StatusBar</a></li><li><a href="ThrowableObject.html">ThrowableObject</a></li><li><a href="World.html">World</a></li></ul><h3>Global</h3><ul><li><a href="global.html#muteSound">muteSound</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.3</a> on Thu Jul 18 2024 10:21:18 GMT+0200 (Mitteleuropäische Sommerzeit)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
